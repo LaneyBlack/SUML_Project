@@ -1,11 +1,4 @@
-import numpy as np
-import joblib
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import LinearSVC
-from tqdm import tqdm
-from scipy.sparse import vstack
+from backend.import_requirements import pd, train_test_split, TfidfVectorizer, tqdm, vstack, joblib, LinearSVC
 
 DATA_DIR = "data/dataset.csv"
 COMPLETE_MODEL_DIR = "models/complete_model.joblib"
@@ -31,7 +24,6 @@ def train_data(data):
         X_train_vectorized_chunks.append(vectorizer.transform(chunk))
     X_train_vectorized = vstack(X_train_vectorized_chunks)
     X_test_vectorized = vectorizer.transform(X_test)
-    # Train the model
     model = LinearSVC()
     model.fit(X_train_vectorized, y_train)
     return model, vectorizer, X_test_vectorized, y_test
@@ -55,6 +47,7 @@ def predict(text):
     vectorizer = loaded_data["vectorizer"]
     vectorizer_text = vectorizer.transform(text)
     return model.predict(vectorizer_text)
+
 
 if __name__ == '__main__':
     data = organize_data(DATA_DIR)
