@@ -47,10 +47,3 @@ def predict(text):
     vectorizer = loaded_data["vectorizer"]
     vectorizer_text = vectorizer.transform(text)
     return model.predict(vectorizer_text)
-
-
-if __name__ == '__main__':
-    data = organize_data(DATA_DIR)
-    model, vectorizer, X_test_vectorized, y_test = train_data(data)
-    evaluate_model(model, X_test_vectorized, y_test)
-    save_model(model, vectorizer, COMPLETE_MODEL_DIR)

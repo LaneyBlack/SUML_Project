@@ -1,0 +1,10 @@
+COPY TO FAST_API:
+{
+  "text": [
+    "Israeli Prime Minister Benjamin Netanyahu has scrapped plans to attend US President-elect Donald Trump’s inauguration on January 20, Israeli officials told CNN on Thursday. The prime minister hadn’t formally announced a trip to the US, but Israeli media has reported that he was expected to attend the ceremony. News of Netanyahu’s change of plans came two days after judges involved in his long-running corruption trial announced that his next court hearing will be held on January 20, the day of Trump’s inauguration. Netanyahu has repeatedly spoken on the phone with the incoming US president since Trump won the election in November. Both Trump and Biden are pushing Israel and Hamas to reach a hostage and ceasefire deal before Trump’s inauguration.",
+"The New York Court of Appeals – New York’s highest court – rejected Donald Trump’s request to stay his sentencing one day before Judge Juan Merchan is set to impose a sentence on the president-elect for the May conviction on 34 counts of falsifying business records in the hush money case. Trump’s attorneys were notified Thursday morning that Judge Jenny Rivera denied Trump’s request, according to a letter from the Court of Appeals. Trump has also asked the Supreme Court to block his sentencing. Merchan signaled in an order earlier this month denying Trump’s bid to toss the conviction that when he sentenced Trump, he will not impose penalties on the president-elect, who is set to retake the White House in less than two weeks. Trump is expected to appear virtually at Friday’s sentencing if it happens."
+  ]
+}
+
+Sources:
+https://edition.cnn.com/politics/live-news/trump-transition-news-01-09-25/index.html

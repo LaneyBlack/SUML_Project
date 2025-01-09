@@ -1,60 +1,60 @@
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
+import os
 import uvicorn
-from fastapi import FastAPI, HTTPException, Form
-from pathlib import Path
-from typing import Annotated
-# Relative imports
-from models.point import Point
-from libs.model import MLModel
-
-BASE_DIR = Path(__file__).resolve(strict=True).parent
-MODEL_DIR = Path(BASE_DIR).joinpath("ml_models")
-DATA_DIR = Path(BASE_DIR).joinpath("data")
 
 app = FastAPI()
+# Import the existing functions from your backend
+from model_construction import organize_data, train_data, save_model, predict, evaluate_model
+
+# Define paths
+DATA_DIR = "data/dataset.csv"
+COMPLETE_MODEL_DIR = "models/complete_model.joblib"
 
 
-@app.get("/", tags=["intro"])
-async def index():
-    return {"message": "Linear Regrssion ML"}
+# Pydantic model for input text
+class PredictionRequest(BaseModel):
+    text: List[str]  # Accepts a list of text inputs for predictions
 
 
-@app.post("/model/point", tags=["data"], response_model=Point, status_code=200)
-async def point(x: Annotated[int, Form()], y: Annotated[int, Form()]):
-    return Point(x=x, y=y)
+@app.post("/train")
+def train_model():
+    """Endpoint to train the model."""
+    if not os.path.exists(DATA_DIR):
+        raise HTTPException(status_code=404, detail="Dataset not found.")
+
+    try:
+        # Train the model
+        data = organize_data(DATA_DIR)
+        model, vectorizer, X_test_vectorized, y_test = train_data(data)
+
+        # Evaluate the model
+        evaluate_model(model, X_test_vectorized, y_test)
+
+        # Save the model and vectorizer
+        save_model(model, vectorizer, COMPLETE_MODEL_DIR)
+
+        return {"message": "Model trained and saved successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/model/train", tags=['model'], status_code=200)
-async def train_model(data: Point, data_name="10_points", model_name="our_model"):
-    data_file = Path(DATA_DIR).joinpath(f"{data_name}.csv")
-    model_file = Path(MODEL_DIR).joinpath(f"{model_name}.pkl")
+@app.post("/predict")
+def predict_text(request: PredictionRequest):
+    """Endpoint to make predictions on input text."""
+    if not os.path.exists(COMPLETE_MODEL_DIR):
+        raise HTTPException(status_code=404, detail="Trained model not found.")
 
-    data = data.model_dump()
-    x = data["x"]
-    y = data["y"]
+    label_mapping = {1: "FAKE", 0: "REAL"}
 
-    # ToDo
-    # train(x, y, data_file, model_file)
-
-    return {"model_fit": "OK", "model_save": "OK"}
-
-
-@app.post("/model/predict", tags=['model'], response_model=Point, status_code=200)
-async def get_prediction(data: Point, data_name="10_points", model_name="our_model"):
-    model_file = Path(MODEL_DIR).joinpath(f"{model_name}.pkl")
-
-    if not model_file.exists():
-        raise HTTPException(status_code=400, detail="Model not found")
-
-    data = data.model_dump()
-    x = data["x"]
-
-    # ToDo
-    # y_pred = predict(x=x,ml_model=model_file)
-    # data["y"] = y_pred
-    #
-    # response_object = {"x":x, "y":y_pred[0][0]}
-    # return response_object
-    return {"message": "OK"}
+    try:
+        predictions = predict(request.text)
+        # Zamiana 0 i 1 na odpowiednie nazwy
+        mapped_predictions = [label_mapping[pred] for pred in predictions]
+        return {"predictions": mapped_predictions}  # Zwrócenie listy z nazwami
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == "__main__":
