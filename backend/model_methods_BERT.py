@@ -1,5 +1,5 @@
 from backend.import_requirements import plt, sns, DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, \
-    TrainingArguments, torch, accuracy_score, os
+    TrainingArguments, torch, os
 
 
 def predict_text(title: str, text: str, model_path: str):
