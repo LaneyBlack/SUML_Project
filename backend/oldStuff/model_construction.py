@@ -6,10 +6,10 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report, accuracy_score
 import os
 
-DATA_DIR = "data/dataset.csv"
-COMPLETE_MODEL_DIR = "models/complete_model.joblib"
-FEATURE_WEIGHTS_HEATMAP_DIR = "charts/feature_weights_heatmap.png"
-IMPORTANCE_HEATMAP_DIR = "charts/importance_heatmap.png"
+DATA_DIR = "../data/dataset.csv"
+COMPLETE_MODEL_DIR = "../models/complete_model.joblib"
+FEATURE_WEIGHTS_HEATMAP_DIR = "../charts/feature_weights_heatmap.png"
+IMPORTANCE_HEATMAP_DIR = "../charts/importance_heatmap.png"
 
 
 def organize_data(model_data_path):

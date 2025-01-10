@@ -7,8 +7,8 @@ from models.point import Point
 from libs.model import MLModel
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent
-MODEL_DIR = Path(BASE_DIR).joinpath("ml_models")
-DATA_DIR = Path(BASE_DIR).joinpath("data")
+MODEL_DIR = Path(BASE_DIR).joinpath("../ml_models")
+DATA_DIR = Path(BASE_DIR).joinpath("../data")
 
 app = FastAPI()
 
