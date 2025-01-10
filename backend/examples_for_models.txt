@@ -1,10 +1,18 @@
-COPY TO FAST_API:
-{
-  "text": [
-    "Israeli Prime Minister Benjamin Netanyahu has scrapped plans to attend US President-elect Donald Trump’s inauguration on January 20, Israeli officials told CNN on Thursday. The prime minister hadn’t formally announced a trip to the US, but Israeli media has reported that he was expected to attend the ceremony. News of Netanyahu’s change of plans came two days after judges involved in his long-running corruption trial announced that his next court hearing will be held on January 20, the day of Trump’s inauguration. Netanyahu has repeatedly spoken on the phone with the incoming US president since Trump won the election in November. Both Trump and Biden are pushing Israel and Hamas to reach a hostage and ceasefire deal before Trump’s inauguration.",
-"The New York Court of Appeals – New York’s highest court – rejected Donald Trump’s request to stay his sentencing one day before Judge Juan Merchan is set to impose a sentence on the president-elect for the May conviction on 34 counts of falsifying business records in the hush money case. Trump’s attorneys were notified Thursday morning that Judge Jenny Rivera denied Trump’s request, according to a letter from the Court of Appeals. Trump has also asked the Supreme Court to block his sentencing. Merchan signaled in an order earlier this month denying Trump’s bid to toss the conviction that when he sentenced Trump, he will not impose penalties on the president-elect, who is set to retake the White House in less than two weeks. Trump is expected to appear virtually at Friday’s sentencing if it happens."
-  ]
-}
+- -  - -  - -  - - - - - - - - - - - - - REAL: - -  - -  - -  - - - - - - - - - - - - -
+1. https://www.livescience.com/planet-earth/weather/wildfires-raging-in-la-are-being-fueled-by-santa-ana-winds-what-are-they:
+[TITLE]
+Santa Ana winds: What is causing the deadly fires sweeping across Los Angeles?
+[TEXT]
+Firefighters in Los Angeles County are battling five life-threatening wildfires 36 hours after the first flames broke out in the Palisades area, the California Department of Forestry and Fire Protection reports. The fires were whipped up in a flash thanks to a combination of unusually dry weather and hurricane-force gusts that reached speeds of up to 99 mph (160 km/h).
+More than 100,000 LA residents have been evacuated from their homes and about 29,000 acres (11,300 hectares) have been burned by the five fires as of early Thursday morning (Jan. 9.) The fires have destroyed more than 1,000 structures so far and five confirmed fatalities have been reported, according to the Associated Press (AP).
+The fires are flourishing due to dry conditions, while firefighters have reported that some hydrants in the Pacific Palisades are coming up dry, potentially hindering fire-extinguishing efforts, according to the Los Angeles Times. The blaze is expected to continue until Thursday, according to the National Weather Service (NWS.) Strong winds also grounded firefighting planes on Tuesday night, further hindering efforts to contain blazes, according to the LA Times.
 
-Sources:
-https://edition.cnn.com/politics/live-news/trump-transition-news-01-09-25/index.html
+
+- -  - -  - -  - - - - - - - - - - - - - FAKE: - -  - -  - -  - - - - - - - - - - - - -
+1. https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-015-1364-0:
+[TITLE]
+Messenger RNA sequencing and pathway analysis provide novel insights into the biological basis of chickens’ feed efficiency
+[TEXT]
+Background Advanced selection technologies have been developed and continually optimized to improve traits of agricultural importance; however, these methods have been primarily applied without knowledge of underlying biological changes that may be induced by selection. This study aims to characterize the biological basis of differences between chickens with low and high feed efficiency (FE) with a long-term goal of improving the ability to select for FE.
+Results High-throughput RNA sequencing was performed on 23 breast muscle samples from commercial broiler chickens with extremely high (n = 10) and low (n = 13) FE. An average of 34 million paired-end reads (75 bp) were produced for each sample, 80% of which were properly mapped to the chicken reference genome (Ensembl Galgal4). Differential expression analysis identified 1,059 genes (FDR < 0.05) that significantly divergently expressed in breast muscle between the high- and low-FE chickens. Gene function analysis revealed that genes involved in muscle remodeling, inflammatory response and free radical scavenging were mostly up-regulated in the high-FE birds. Additionally, growth hormone and IGFs/PI3K/Akt signaling pathways were enriched in differentially expressed genes, which might contribute to the high breast muscle yield in high-FE birds and partly explain the FE advantage of high-FE chickens.
+Conclusions This study provides novel insights into transcriptional differences in breast muscle between high- and low-FE broiler chickens. Our results show that feed efficiency is associated with breast muscle growth in these birds; furthermore, some physiological changes, e.g., inflammatory response and oxidative stress, may occur in the breast muscle of the high-FE chickens, which may be of concern for continued selection for both of these traits together in modern broiler chickens.
