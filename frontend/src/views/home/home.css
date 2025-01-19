@@ -26,7 +26,7 @@
   margin-bottom: var(--dl-space-space-oneandhalfunits);
 }
  
-.home-text10 {
+.title-h1 {
   color: rgb(58, 71, 77);
   width: 80%;
   display: flex;
@@ -40,9 +40,9 @@
 }
  
 .home-text11 {
-  color: rgb(119, 119, 119);
+  color: var(--dl-color-gray-light);
   font-size: 1em;
-  font-family: "Poppins";
+  font-family: "Poppins", serif;
   text-decoration: underline;
 }
  
@@ -70,37 +70,39 @@
 }
  
 .home-textarea1 {
-  color: #a4a4a4;
+  color: var(--dl-color-gray-light);
   width: 85%;
   height: 86px;
   font-size: medium;
   align-self: center;
   margin-top: var(--dl-space-space-oneandhalfunits);
-  padding-top: 1.5em;
-  border-color: #afafaf;
+  border-color: var(--dl-color-gray-light);
   border-width: 2px;
-  padding-left: 1.5rem;
   border-radius: 20px;
   margin-bottom: var(--dl-space-space-oneandhalfunits);
-  padding-right: 1.5rem;
-  padding-bottom: 1.5em;
+  padding: 1.5em 1.5rem;
+}
+
+.home-textarea1:focus {
+  color: var(--dl-color-gray-black);
 }
  
 .home-textarea2 {
-  color: #a4a4a4;
+  color: var(--dl-color-gray-light);
   width: 85%;
-  height: 259px;
+  height: 300px;
   font-size: medium;
   align-self: center;
   margin-top: var(--dl-space-space-oneandhalfunits);
-  padding-top: 1.5em;
-  border-color: #afafaf;
+  border-color: var(--dl-color-gray-light);
   border-width: 2px;
-  padding-left: 1.5rem;
   border-radius: 20px;
   margin-bottom: var(--dl-space-space-oneandhalfunits);
-  padding-right: 1.5rem;
-  padding-bottom: 1.5em;
+  padding: 1.5em 1.5rem;
+}
+
+.home-textarea2:focus {
+  color: var(--dl-color-gray-black);
 }
  
 .home-text13 {
@@ -167,13 +169,13 @@
 }
  
 .home-text20 {
-  color: #ec5033;
+  color: var(--dl-color-red);
   font-style: normal;
   font-weight: 500;
 }
  
 .home-text22 {
-  color: rgba(0, 0, 0, 0.52);
+  color: rgba(0, 0, 0, 0.50);
   width: 85%;
   font-size: 1em;
   align-self: center;
@@ -232,33 +234,33 @@
   justify-content: center;
 }
  
-.home-button1 {
+.reset-button {
   color: rgb(255, 255, 255);
   width: 8em;
   height: 2.5em;
   font-size: 1.3em;
   font-style: normal;
-  font-family: "Poppins";
+  font-family: "Poppins", serif;
   font-weight: 600;
   border-width: 0px;
   border-radius: 40px;
   background-color: #8e8e8e;
 }
  
-.home-button2 {
+.train-button {
   color: rgb(255, 255, 255);
   width: 8em;
   height: 2.5em;
   font-size: 1.3em;
   font-style: normal;
-  font-family: "Poppins";
+  font-family: "Poppins", serif;
   font-weight: 600;
   border-width: 0px;
   border-radius: 40px;
   background-color: rgb(95, 175, 100);
 }
  
-.home-button3 {
+.predict-button {
   color: rgb(255, 255, 255);
   width: 8em;
   height: 2.5em;

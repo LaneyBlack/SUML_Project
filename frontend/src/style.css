@@ -1,22 +1,31 @@
+.button {
+  color: var(--dl-color-gray-black);
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-color: var(--dl-color-gray-black);
+  border-width: 1px;
+  border-radius: 4px;
+  background-color: var(--dl-color-gray-white);
+}
+
 :root {
+  --dl-color-gray-dark: rgb(58, 71, 77);
   --dl-color-gray-500: #595959;
   --dl-color-gray-700: #999999;
+  --dl-color-gray-light: #a4a4a4;
   --dl-color-gray-900: #D9D9D9;
   --dl-size-size-large: 144px;
   --dl-size-size-small: 48px;
   --dl-color-danger-300: #A22020;
   --dl-color-danger-500: #BF2626;
   --dl-color-danger-700: #E14747;
+  --dl-color-red: #ec5033;
   --dl-color-gray-black: #000000;
   --dl-color-gray-white: #FFFFFF;
   --dl-size-size-medium: 96px;
   --dl-size-size-xlarge: 192px;
   --dl-size-size-xsmall: 16px;
   --dl-space-space-unit: 16px;
-  --dl-color-primary-100: #003EB3;
-  --dl-color-primary-300: #0074F0;
-  --dl-color-primary-500: #14A9FF;
-  --dl-color-primary-700: #85DCFF;
   --dl-color-success-300: #199033;
   --dl-color-success-500: #32A94C;
   --dl-color-success-700: #4CC366;
@@ -34,17 +43,7 @@
   --dl-space-space-threeunits: 48px;
   --dl-space-space-oneandhalfunits: 24px;
 }
- 
-.button {
-  color: var(--dl-color-gray-black);
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border-color: var(--dl-color-gray-black);
-  border-width: 1px;
-  border-radius: 4px;
-  background-color: var(--dl-color-gray-white);
-}
- 
+
 .input {
   color: var(--dl-color-gray-black);
   cursor: auto;
@@ -63,6 +62,7 @@
   border-width: 1px;
   border-radius: 4px;
   background-color: var(--dl-color-gray-white);
+  resize: none;
 }
  
 .list {

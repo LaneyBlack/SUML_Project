@@ -9,9 +9,9 @@ const rootElement = document.getElementById('app');
 const root = ReactDOM.createRoot(rootElement);
 root.render(
     <React.StrictMode>
-        <App />
+        <App/>
     </React.StrictMode>
 );
 
 // Measuring performance
-reportWebVitals(console.log);
+// reportWebVitals(console.log);

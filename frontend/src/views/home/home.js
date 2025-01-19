@@ -1,76 +1,99 @@
-import React from 'react'
-
+import React, {useState} from 'react'
 import {Helmet} from 'react-helmet'
-
+// Relative imports
 import './home.css'
 
 const Home = (props) => {
+    const [title, setTitle] = useState("");
+    const handleTitle = (event) => {
+        setTitle(event.target.value); // Update the state with the new value
+    };
+    const [body, setBody] = useState("");
+    const handleBody = (event) => {
+        setBody(event.target.value); // Update the state with the new value
+    };
+
     return (<div className="home-container1">
         <Helmet>
-            <title>Face News Detector</title>
-            <meta property="og:title" content="Face News Detector"/>
+            <title>Fake News Detector</title>
+            <meta property="og:title" content="Fake News Detector"/>
         </Helmet>
         <div className="home-main">
             <img alt="image"
-                src="https://news.stanford.edu/__data/assets/image/0021/41808/Fake-news-and-facts-digital-concept.jpeg"
-                className="home-image"/>
-            <h1 className="home-text10">Fake News Detection</h1>
-            <span className="home-text11">User Manual</span>
+                 src="https://news.stanford.edu/__data/assets/image/0021/41808/Fake-news-and-facts-digital-concept.jpeg"
+                 className="home-image"/>
+            <h1 className="title-h1">Fake News Detection</h1>
+            {/*<Link to="#user-manual" smooth>User manual</Link>*/}
+            <a href="/#user-manual" className="home-text11">User manual</a>
+            {/*<span className="home-text11">User Manual</span>*/}
             <div className="home-input">
                     <span className="home-text12">
                         Paste the news into the text field 📰
                     </span>
                 <textarea
                     placeholder="Title of Your news .."
-                    className="home-textarea1 textarea">
-                    </textarea>
+                    className="home-textarea1 textarea"
+                    value={title}
+                    onChange={handleTitle}
+                >
+                </textarea>
                 <textarea
-                    placeholder="Your news .."
-                    className="home-textarea2 textarea">
-                    </textarea>
+                    placeholder="Body of your news .."
+                    className="home-textarea2 textarea"
+                    value={body}
+                    onChange={handleBody}
+                >
+                </textarea>
+                {/*Title error*/}
                 <span className="home-text13">
                         <span className="home-text14">
-                          * Oops! Please add a title to your news story before proceeding.
+                          * Oops! Please add a title to your news story before proceeding.
                         </span>
                         <br></br>
-                    </span>
+                </span>
+                {/*Body error*/}
                 <span className="home-text16">
                     <span className="home-text17">
-                        * Oops! The News is empty. Please add some text before proceeding.
+                        * Oops! The News is empty. Please add some text before proceeding.
                     </span>
                     <br></br>
                 </span>
+                {/*Low character error*/}
                 <span className="home-text19">
-            <span className="home-text20">
-              * Text is too short. Please provide at least 100 characters.
-            </span>
-            <br></br>
-          </span>
+                    <span className="home-text20">
+                      * Text is too short. Please provide at least 100 characters.
+                    </span>
+                    <br></br>
+                </span>
+                {/*Too long error*/}
                 <span className="home-text22">
-            <span className="home-text23">
-              * Text is too long. Please limit your input to 10,000 characters.
-            </span>
-            <br></br>
-          </span>
+                    <span className="home-text23">
+                      * Text is too long. Please limit your input to 10,000 characters.
+                    </span>
+                    <br></br>
+                </span>
+                {/*Invalid input*/}
                 <span className="home-text25">
-            <span className="home-text26">
-              * Invalid input detected. Please use readable text (letters,
-              numbers, and punctuation).
-            </span>
-            <br></br>
-          </span>
+                    <span className="home-text26">
+                      * Invalid input detected. Please use readable text (letters,
+                      numbers, and punctuation).
+                    </span>
+                    <br></br>
+                </span>
+                {/*Buttons*/}
                 <div className="home-container2">
-                    <button type="button" className="home-button1 button">
+                    <button type="button" className="reset-button button">
                         Reset
                     </button>
-                    <button type="button" className="home-button2 button">
+                    <button type="button" className="train-button button">
                         Train
                     </button>
-                    <button type="button" className="home-button3 button">
+                    <button type="button" className="predict-button button">
                         Predict
                     </button>
                 </div>
             </div>
+            {/*---Loading animation---*/}
             <svg width="24" height="24" viewBox="0 0 24 24" className="home-icon1">
                 <circle r="0" cx="18" cy="12" fill="currentColor">
                     <animate
@@ -80,8 +103,8 @@ const Home = (props) => {
                         calcMode="spline"
                         keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
                         repeatCount="indefinite"
-                        attributeName="r"
-                    ></animate>
+                        attributeName="r">
+                    </animate>
                 </circle>
                 <circle r="0" cx="12" cy="12" fill="currentColor">
                     <animate
@@ -91,8 +114,8 @@ const Home = (props) => {
                         calcMode="spline"
                         keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
                         repeatCount="indefinite"
-                        attributeName="r"
-                    ></animate>
+                        attributeName="r">
+                    </animate>
                 </circle>
                 <circle r="0" cx="6" cy="12" fill="currentColor">
                     <animate
@@ -108,62 +131,63 @@ const Home = (props) => {
             </svg>
             <div className="home-output-fake1">
                 <span className="home-text28">FAKE</span>
-                <span className="home-text29">🎯 Precision: 98% </span>
+                <span className="home-text29">🎯 Precision: 98% </span>
             </div>
             <div className="home-output-fake2">
                 <span className="home-text30">FACT</span>
-                <span className="home-text31">🎯 Precision: 99.9% </span>
+                <span className="home-text31">🎯 Precision: 99.9% </span>
             </div>
-            <div className="home-user-manual">
+            {/*---User manual---*/}
+            <div id="user-manual" className="home-user-manual">
                 <h1 className="home-text32">
                     Welcome to the Fake News Detection Tool!
                 </h1>
                 <span className="home-text33">
-            Whether you’re here to bust some fake news or accidentally train
-            your own model into thinking everything is a conspiracy (please
-            don&apos;t), this guide will walk you through every step. 
-            Let&apos;s get started!
-          </span>
+                    Whether you’re here to bust some fake news or accidentally train
+                    your own model into thinking everything is a conspiracy (please
+                    don't), this guide will walk you through every step.
+                    Let's get started!
+                </span>
                 <div className="home-container3">
-            <span className="home-text34">
-              <span>Step 1: Input Some Text</span>
-              <br className="home-text36"></br>
-            </span>
+                    <span className="home-text34">
+                      <span>Step 1: Input Some Text</span>
+                      <br className="home-text36"></br>
+                    </span>
                     <span className="home-text37">
-              <span>
-                Go to the input box. (You can’t miss it—it’s big and empty, like
-                your calendar on a Friday night.)
-              </span>
-              <br></br>
-              <span>
-                Copy-paste a news article, type in a headline, or invent your
-                own conspiracy theory. The AI won’t judge... much.
-              </span>
-            </span>
+                        <span>
+                            Go to the input box. (You can’t miss it—it’s big and empty, like
+                            your calendar on a Friday night.)
+                        </span>
+                        <br></br>
+                        <span>
+                            Copy-paste a news article, type in a headline, or invent your
+                            own conspiracy theory. The AI won’t judge... much.
+                        </span>
+                    </span>
                     <span className="home-text41">
-              <span>Step 2: Pick an Action</span>
-              <br className="home-text43"></br>
-            </span>
+                        <span>Step 2: Pick an Action</span>
+                        <br className="home-text43"></br>
+                    </span>
                     <span className="home-text44">
-              <span className="home-text45">
-                A) Reset (For Mistakes): If you change your mind, click the
-                Reset button. The text box will clear out, as if nothing ever
-                happened.  Perfect for “Wait, this isn&apos;t fake news—it’s my
-                to-do list!” moments.
-              </span>
-              <br></br>
-            </span>
+                        <span className="home-text45">
+                            A) Reset (For Mistakes): If you change your mind, click the
+                            Reset button. The text box will clear out, as if nothing ever
+                            happened.  Perfect for “Wait, this isn 't fake news—it’s my
+                            to-do list!” moments.
+                        </span>
+                        <br></br>
+                    </span>
                     <span className="home-text47">
-              <span>
-                B) Train (Teach the AI): Click the Train button. A new popup
-                will appear asking for your input:Is the text you entered Fact
-                or Fake? Select one. The AI will process your choice and either
-                celebrate your success with a cheerful “Training Successful!”
-                message or throw an “Error” if something went wrong (like trying
-                to outsmart it by labeling pizza recipes as fake news).
-                Congratulations! You’ve just helped train the AI to be smarter.
-                Gold star for you!
-              </span>
+                      <span>
+                        B) Train (Teach the AI): Click the Train button. A new popup
+                        will appear asking for your input:Is the text you entered Fact
+                        or Fake? Select one. The AI will process your choice and either
+                        celebrate your success with a cheerful “Training Successful!”
+                        message or throw an “Error” if something went wrong (like trying
+                        to outsmart it by labeling pizza recipes as fake news).
+                        Congratulations! You’ve just helped train the AI to be smarter.
+                        Gold star for you!
+                      </span>
               <br></br>
             </span>
                     <span className="home-text50">
@@ -207,7 +231,7 @@ const Home = (props) => {
                 </div>
             </div>
             <span className="home-text63">
-          <span>Made by Chrzczone Chrząszcze Team </span>
+          <span>Made by Chrzczone Chrząszcze Team </span>
           <span className="home-text65">❤️</span>
         </span>
         </div>
