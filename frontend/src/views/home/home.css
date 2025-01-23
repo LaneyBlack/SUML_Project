@@ -34,15 +34,13 @@
   align-self: center;
   margin-top: var(--dl-space-space-halfunit);
   text-align: center;
-  font-family: "Poppins";
   margin-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
 }
  
 .user-manual-link {
-  color: var(--dl-color-gray-light);
+  color: var(--dl-color-gray-main);
   font-size: 1em;
-  font-family: "Poppins", serif;
   text-decoration: underline;
 }
  
@@ -64,8 +62,6 @@
   color: var(--dl-color-primary);
   font-size: 1em;
   align-self: center;
-  font-style: normal;
-  font-family: "Poppins";
   font-weight: 600;
 }
  
@@ -333,8 +329,6 @@
   color: var(--dl-color-primary);
   font-size: 1.5em;
   align-self: center;
-  font-style: normal;
-  font-family: "Poppins";
   font-weight: 600;
 }
  
@@ -359,9 +353,7 @@
   width: auto;
   font-size: 100px;
   align-self: center;
-  font-style: normal;
   text-align: center;
-  font-family: "Poppins";
   font-weight: 700;
 }
  
@@ -369,8 +361,6 @@
   color: var(--dl-color-green);
   font-size: 1.5em;
   align-self: center;
-  font-style: normal;
-  font-family: "Poppins";
   font-weight: 600;
 }
  
@@ -397,7 +387,6 @@
   align-self: center;
   margin-top: var(--dl-space-space-halfunit);
   text-align: center;
-  font-family: "Poppins";
   margin-bottom: var(--dl-space-space-halfunit);
   justify-content: center;
 }
@@ -407,9 +396,7 @@
   width: 90%;
   font-size: 1em;
   align-self: center;
-  font-style: normal;
   text-align: left;
-  font-family: "Poppins";
   font-weight: 500;
   padding-left: var(--dl-space-space-halfunit);
   padding-right: var(--dl-space-space-halfunit);
@@ -429,20 +416,15 @@
   font-size: 1.5em;
   align-self: center;
   text-align: left;
-  font-family: "Poppins";
   font-weight: 600;
   margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
   margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
   border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
+  padding: var(--dl-space-space-oneandhalfunits);
   background-color: rgba(206, 206, 206, 0.21);
 }
  
 .home-text36 {
-  font-style: normal;
   font-weight: 500;
 }
  
@@ -451,9 +433,7 @@
   width: 90%;
   font-size: 1em;
   align-self: center;
-  font-style: normal;
   text-align: left;
-  font-family: "Poppins";
   font-weight: 500;
   margin-left: var(--dl-space-space-halfunit);
   margin-right: var(--dl-space-space-halfunit);
@@ -468,7 +448,6 @@
   font-size: 1.5em;
   align-self: center;
   text-align: left;
-  font-family: "Poppins";
   font-weight: 600;
   margin-left: var(--dl-space-space-halfunit);
   margin-right: var(--dl-space-space-halfunit);
@@ -478,7 +457,6 @@
 }
  
 .home-text43 {
-  font-style: normal;
   font-weight: 500;
 }
  
@@ -488,7 +466,6 @@
   font-size: 1em;
   align-self: center;
   text-align: left;
-  font-family: "Poppins";
   font-weight: 600;
   margin-left: var(--dl-space-space-halfunit);
   margin-right: var(--dl-space-space-halfunit);
@@ -498,7 +475,6 @@
 }
  
 .home-text45 {
-  font-style: normal;
   font-weight: 500;
 }
  
@@ -507,9 +483,7 @@
   width: 90%;
   font-size: 1em;
   align-self: center;
-  font-style: normal;
   text-align: left;
-  font-family: "Poppins";
   font-weight: 500;
   margin-left: var(--dl-space-space-halfunit);
   margin-right: var(--dl-space-space-halfunit);
@@ -523,9 +497,7 @@
   width: 90%;
   font-size: 1em;
   align-self: center;
-  font-style: normal;
   text-align: left;
-  font-family: "Poppins";
   font-weight: 500;
   margin-left: var(--dl-space-space-halfunit);
   margin-right: var(--dl-space-space-halfunit);
@@ -539,9 +511,7 @@
   width: 90%;
   font-size: 1em;
   align-self: center;
-  font-style: normal;
   text-align: left;
-  font-family: "Poppins";
   font-weight: 500;
   padding-left: var(--dl-space-space-halfunit);
   padding-right: var(--dl-space-space-halfunit);
@@ -556,10 +526,8 @@
   width: 90%;
   font-size: 1em;
   align-self: center;
-  font-style: normal;
   margin-top: var(--dl-space-space-oneandhalfunits);
   text-align: center;
-  font-family: "Poppins";
   font-weight: 500;
   padding-left: var(--dl-space-space-halfunit);
   margin-bottom: var(--dl-space-space-oneandhalfunits);
