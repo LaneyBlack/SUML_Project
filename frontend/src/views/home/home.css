@@ -39,7 +39,7 @@
   justify-content: center;
 }
  
-.home-text11 {
+.user-manual-link {
   color: var(--dl-color-gray-light);
   font-size: 1em;
   font-family: "Poppins", serif;
@@ -61,7 +61,7 @@
 }
  
 .home-text12 {
-  color: rgb(236, 80, 51);
+  color: var(--dl-color-primary);
   font-size: 1em;
   align-self: center;
   font-style: normal;
@@ -84,7 +84,7 @@
 }
 
 .home-textarea1:focus {
-  color: var(--dl-color-gray-black);
+  color: var(--dl-color-black);
 }
  
 .home-textarea2 {
@@ -102,7 +102,7 @@
 }
 
 .home-textarea2:focus {
-  color: var(--dl-color-gray-black);
+  color: var(--dl-color-black);
 }
  
 .home-text13 {
@@ -123,7 +123,7 @@
 }
  
 .home-text14 {
-  color: #ec5033;
+  color: var(--dl-color-primary);
   font-style: normal;
   font-weight: 500;
 }
@@ -146,13 +146,13 @@
 }
  
 .home-text17 {
-  color: #ec5033;
+  color: var(--dl-color-primary);
   font-style: normal;
   font-weight: 500;
 }
  
 .home-text19 {
-  color: rgba(0, 0, 0, 0.52);
+  color: rgba(0, 0, 0, 0.5);
   width: 85%;
   font-size: 1em;
   align-self: center;
@@ -160,22 +160,19 @@
   font-family: "Poppins";
   font-weight: 600;
   margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
   margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
   border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
+  padding: var(--dl-space-space-oneandhalfunits);
 }
  
 .home-text20 {
-  color: var(--dl-color-red);
+  color: var(--dl-color-primary);
   font-style: normal;
   font-weight: 500;
 }
  
 .home-text22 {
-  color: rgba(0, 0, 0, 0.50);
+  color: rgba(0, 0, 0, 0.5);
   width: 85%;
   font-size: 1em;
   align-self: center;
@@ -183,22 +180,19 @@
   font-family: "Poppins";
   font-weight: 600;
   margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
   margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
   border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
+  padding: var(--dl-space-space-oneandhalfunits);
 }
  
 .home-text23 {
-  color: #ec5033;
+  color: var(--dl-color-primary);
   font-style: normal;
   font-weight: 500;
 }
  
 .home-text25 {
-  color: rgba(0, 0, 0, 0.52);
+  color: rgba(0, 0, 0, 0.5);
   width: 85%;
   font-size: 1em;
   align-self: center;
@@ -206,18 +200,24 @@
   font-family: "Poppins";
   font-weight: 600;
   margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
   margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
   border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
+  padding: var(--dl-space-space-oneandhalfunits);
 }
  
-.home-text26 {
-  color: #ec5033;
-  font-style: normal;
+.error-text {
+  width: 85%;
+  font-size: 1em;
+  align-self: center;
+  text-align: left;
+  font-family: "Poppins", serif;
   font-weight: 500;
+  margin-left: var(--dl-space-space-halfunit);
+  margin-right: var(--dl-space-space-halfunit);
+  border-radius: 20px;
+  padding: var(--dl-space-space-oneandhalfunits);
+  color: var(--dl-color-primary);
+  font-style: normal;
 }
  
 .home-container2 {
@@ -235,7 +235,7 @@
 }
  
 .reset-button {
-  color: rgb(255, 255, 255);
+  color: var(--dl-color-white);
   width: 8em;
   height: 2.5em;
   font-size: 1.3em;
@@ -246,9 +246,17 @@
   border-radius: 40px;
   background-color: #8e8e8e;
 }
+
+.reset-button:hover {
+  background-color: var(--dl-color-gray-light);
+}
+
+.reset-button:active {
+  background-color: #bebebe;
+}
  
 .train-button {
-  color: rgb(255, 255, 255);
+  color: var(--dl-color-white);
   width: 8em;
   height: 2.5em;
   font-size: 1.3em;
@@ -257,11 +265,19 @@
   font-weight: 600;
   border-width: 0px;
   border-radius: 40px;
-  background-color: rgb(95, 175, 100);
+  background-color: var(--dl-color-green);
+}
+
+.train-button:hover {
+  background-color: var(--dl-color-green-l1);
+}
+
+.train-button:active {
+  background-color: var(--dl-color-green-l2);
 }
  
 .predict-button {
-  color: rgb(255, 255, 255);
+  color: var(--dl-color-white);
   width: 8em;
   height: 2.5em;
   font-size: 1.3em;
@@ -270,11 +286,18 @@
   font-weight: 600;
   border-width: 0px;
   border-radius: 40px;
-  background-color: rgb(236, 80, 51);
+  background-color: var(--dl-color-primary);
 }
- 
+
+.predict-button:hover{
+  background-color: var(--dl-color-primary-l1);
+}
+.predict-button:active{
+  background-color: var(--dl-color-primary-l2);
+}
+
 .home-icon1 {
-  color: var(--dl-color-gray-500);
+  color: var(--dl-color-gray-main);
   width: 158px;
   height: 74px;
 }
@@ -295,8 +318,8 @@
   background-color: #feeae7;
 }
  
-.home-text28 {
-  color: rgb(236, 80, 51);
+.fake-output-text {
+  color: var(--dl-color-primary);
   width: auto;
   font-size: 100px;
   align-self: center;
@@ -306,8 +329,8 @@
   font-weight: 700;
 }
  
-.home-text29 {
-  color: rgb(236, 80, 51);
+.fake-output-text-precision {
+  color: var(--dl-color-primary);
   font-size: 1.5em;
   align-self: center;
   font-style: normal;
@@ -315,7 +338,7 @@
   font-weight: 600;
 }
  
-.home-output-fake2 {
+.home-output-fact {
   flex: 0 0 auto;
   width: 80%;
   height: auto;
@@ -331,8 +354,8 @@
   background-color: rgba(96, 175, 100, 0.3);
 }
  
-.home-text30 {
-  color: #60af64;
+.fact-output-text {
+  color: var(--dl-color-green);
   width: auto;
   font-size: 100px;
   align-self: center;
@@ -342,8 +365,8 @@
   font-weight: 700;
 }
  
-.home-text31 {
-  color: rgb(96, 175, 100);
+.fact-output-text-precision {
+  color: var(--dl-color-green);
   font-size: 1.5em;
   align-self: center;
   font-style: normal;
@@ -433,12 +456,9 @@
   font-family: "Poppins";
   font-weight: 500;
   margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
   margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
   border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
+  padding: var(--dl-space-space-oneandhalfunits);
   background-color: rgba(206, 206, 206, 0.21);
 }
  
@@ -451,12 +471,9 @@
   font-family: "Poppins";
   font-weight: 600;
   margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
   margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
   border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
+  padding: var(--dl-space-space-oneandhalfunits);
   background-color: rgba(206, 206, 206, 0.21);
 }
  
@@ -474,12 +491,9 @@
   font-family: "Poppins";
   font-weight: 600;
   margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
   margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
   border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
+  padding: var(--dl-space-space-oneandhalfunits);
   background-color: rgba(206, 206, 206, 0.21);
 }
  
@@ -498,12 +512,9 @@
   font-family: "Poppins";
   font-weight: 500;
   margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
   margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
   border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
+  padding: var(--dl-space-space-oneandhalfunits);
   background-color: rgba(206, 206, 206, 0.21);
 }
  
@@ -517,12 +528,9 @@
   font-family: "Poppins";
   font-weight: 500;
   margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
   margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
   border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
+  padding: var(--dl-space-space-oneandhalfunits);
   background-color: rgba(206, 206, 206, 0.21);
 }
  
@@ -568,12 +576,12 @@
     align-self: center;
     text-align: center;
   }
-  .home-text29 {
+  .fake-output-text-precision {
     width: 90%;
     align-self: center;
     text-align: center;
   }
-  .home-text31 {
+  .fact-output-text-precision {
     width: 90%;
     align-self: center;
     text-align: center;

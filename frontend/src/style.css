@@ -1,37 +1,39 @@
 .button {
-  color: var(--dl-color-gray-black);
+  color: var(--dl-color-black);
   display: inline-block;
   padding: 0.5rem 1rem;
-  border-color: var(--dl-color-gray-black);
+  border-color: var(--dl-color-black);
   border-width: 1px;
   border-radius: 4px;
-  background-color: var(--dl-color-gray-white);
+  background-color: var(--dl-color-white);
 }
 
 :root {
   --dl-color-gray-dark: rgb(58, 71, 77);
-  --dl-color-gray-500: #595959;
-  --dl-color-gray-700: #999999;
+  --dl-color-gray-main: #595959;
   --dl-color-gray-light: #a4a4a4;
-  --dl-color-gray-900: #D9D9D9;
   --dl-size-size-large: 144px;
   --dl-size-size-small: 48px;
-  --dl-color-danger-300: #A22020;
-  --dl-color-danger-500: #BF2626;
-  --dl-color-danger-700: #E14747;
-  --dl-color-red: #ec5033;
-  --dl-color-gray-black: #000000;
-  --dl-color-gray-white: #FFFFFF;
+  --dl-color-primary: #ec5033;
+  --dl-color-primary-l1: #f1664c;
+  --dl-color-primary-l2: #ec715a;
+
+  --dl-color-green: #57b25d;
+  --dl-color-green-l1: #6ead71;
+  --dl-color-green-l2: #7cb27f;
+
+  --dl-color-black: #000000;
+  --dl-color-white: #FFFFFF;
+
   --dl-size-size-medium: 96px;
   --dl-size-size-xlarge: 192px;
   --dl-size-size-xsmall: 16px;
-  --dl-space-space-unit: 16px;
-  --dl-color-success-300: #199033;
-  --dl-color-success-500: #32A94C;
-  --dl-color-success-700: #4CC366;
   --dl-size-size-xxlarge: 288px;
   --dl-size-size-maxwidth: 1400px;
+
   --dl-radius-radius-round: 50%;
+
+  --dl-space-space-unit: 16px;
   --dl-space-space-halfunit: 8px;
   --dl-space-space-sixunits: 96px;
   --dl-space-space-twounits: 32px;
@@ -45,26 +47,26 @@
 }
 
 .input {
-  color: var(--dl-color-gray-black);
+  color: var(--dl-color-black);
   cursor: auto;
   padding: 0.5rem 1rem;
-  border-color: var(--dl-color-gray-black);
+  border-color: var(--dl-color-black);
   border-width: 1px;
   border-radius: 4px;
-  background-color: var(--dl-color-gray-white);
+  background-color: var(--dl-color-white);
 }
- 
+
 .textarea {
-  color: var(--dl-color-gray-black);
+  color: var(--dl-color-black);
   cursor: auto;
   padding: 0.5rem;
-  border-color: var(--dl-color-gray-black);
+  border-color: var(--dl-color-black);
   border-width: 1px;
   border-radius: 4px;
-  background-color: var(--dl-color-gray-white);
+  background-color: var(--dl-color-white);
   resize: none;
 }
- 
+
 .list {
   width: 100%;
   margin: 1em 0px 1em 0px;

@@ -24,8 +24,7 @@ const Home = (props) => {
                  className="home-image"/>
             <h1 className="title-h1">Fake News Detection</h1>
             {/*<Link to="#user-manual" smooth>User manual</Link>*/}
-            <a href="/#user-manual" className="home-text11">User manual</a>
-            {/*<span className="home-text11">User Manual</span>*/}
+            <a href="/#user-manual" className="user-manual-link">User manual</a>
             <div className="home-input">
                     <span className="home-text12">
                         Paste the news into the text field 📰
@@ -45,40 +44,25 @@ const Home = (props) => {
                 >
                 </textarea>
                 {/*Title error*/}
-                <span className="home-text13">
-                        <span className="home-text14">
+                <span className="error-text">
                           * Oops! Please add a title to your news story before proceeding.
-                        </span>
-                        <br></br>
                 </span>
                 {/*Body error*/}
-                <span className="home-text16">
-                    <span className="home-text17">
+                <span className="error-text">
                         * Oops! The News is empty. Please add some text before proceeding.
-                    </span>
-                    <br></br>
                 </span>
                 {/*Low character error*/}
-                <span className="home-text19">
-                    <span className="home-text20">
+                <span className="error-text">
                       * Text is too short. Please provide at least 100 characters.
-                    </span>
-                    <br></br>
                 </span>
                 {/*Too long error*/}
-                <span className="home-text22">
-                    <span className="home-text23">
-                      * Text is too long. Please limit your input to 10,000 characters.
-                    </span>
-                    <br></br>
+                <span className="error-text">
+                    * Text is too long. Please limit your input to 10,000 characters.
                 </span>
                 {/*Invalid input*/}
-                <span className="home-text25">
-                    <span className="home-text26">
+                <span className="error-text">
                       * Invalid input detected. Please use readable text (letters,
                       numbers, and punctuation).
-                    </span>
-                    <br></br>
                 </span>
                 {/*Buttons*/}
                 <div className="home-container2">
@@ -129,13 +113,14 @@ const Home = (props) => {
                     ></animate>
                 </circle>
             </svg>
+            {/*---Output---*/}
             <div className="home-output-fake1">
-                <span className="home-text28">FAKE</span>
-                <span className="home-text29">🎯 Precision: 98% </span>
+                <span className="fake-output-text">FAKE</span>
+                <span className="fake-output-text-precision">🎯 Precision: 98% </span>
             </div>
-            <div className="home-output-fake2">
-                <span className="home-text30">FACT</span>
-                <span className="home-text31">🎯 Precision: 99.9% </span>
+            <div className="home-output-fact">
+                <span className="fact-output-text">FACT</span>
+                <span className="fact-output-text-precision">🎯 Precision: 99.9% </span>
             </div>
             {/*---User manual---*/}
             <div id="user-manual" className="home-user-manual">
