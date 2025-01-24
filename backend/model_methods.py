@@ -93,25 +93,24 @@ import shutil
 
 def fine_tune_model(model_path: str, title: str, text: str, label: str):
     try:
-        # Wczytanie modelu i tokenizera
+        # Model and tokeniser setup
         tokenizer = DistilBertTokenizer.from_pretrained(model_path)
         model = DistilBertForSequenceClassification.from_pretrained(model_path)
 
-        # Przygotowanie danych wejściowych
+        # Preparing the data
         input_text = f"[TITLE] {title} [TEXT] {text}"
         label_id = 0 if label == "REAL" else 1
 
-        # Funkcja do obliczania straty
         def calculate_loss(model, tokenizer, text, label):
             inputs = tokenizer(text, return_tensors="pt", truncation=True, padding="max_length", max_length=128)
             with torch.no_grad():
                 outputs = model(**inputs, labels=torch.tensor([label]))
                 return outputs.loss.item()
 
-        # Obliczenie straty przed douczaniem
+        # Caclulate loss before training
         loss_before = calculate_loss(model, tokenizer, input_text, label_id)
 
-        # Tokenizacja danych do treningu
+        # Tokenizing data for train
         inputs = tokenizer(
             [input_text],
             truncation=True,
@@ -120,7 +119,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
             return_tensors="pt"
         )
 
-        # Utworzenie datasetu PyTorch
+        # Creating PyTorch dataset
         class FineTuneDataset(torch.utils.data.Dataset):
             def __init__(self, inputs, labels):
                 self.inputs = inputs
@@ -138,7 +137,6 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
 
         dataset = FineTuneDataset(inputs, [label_id])
 
-        # Argumenty treningowe
         training_args = TrainingArguments(
             output_dir="fine_tune_output",
             num_train_epochs=1,  # Krótki trening dla douczania
@@ -148,31 +146,28 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
             save_strategy="no"  # Nie zapisujemy modelu po każdej epoce
         )
 
-        # Trener
         trainer = Trainer(
             model=model,
             args=training_args,
             train_dataset=dataset
         )
 
-        # Trening modelu
         trainer.train()
-
-        # Obliczenie straty po douczaniu
+        # Calculate loss after training
         loss_after = calculate_loss(model, tokenizer, input_text, label_id)
 
-        # Tymczasowy katalog dla zapisu modelu
+        # Temp folder to save the model
         temp_model_path = f"{model_path}_temp"
         if os.path.exists(temp_model_path):
-            shutil.rmtree(temp_model_path)  # Usuń tymczasowy katalog, jeśli istnieje
+            shutil.rmtree(temp_model_path)  # Remove the temp folder if it exists
 
-        # Zapis douczonego modelu w tymczasowym katalogu
+        # Saving pretrained temp model
         model.save_pretrained(temp_model_path)
         tokenizer.save_pretrained(temp_model_path)
 
-        # Przeniesienie tymczasowego katalogu do oryginalnej lokalizacji
+        # Move to original catalog
         if os.path.exists(model_path):
-            shutil.rmtree(model_path)  # Usuń stary katalog modelu
+            shutil.rmtree(model_path)  # Remove the old one
         shutil.move(temp_model_path, model_path)
 
         return {
