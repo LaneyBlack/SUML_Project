@@ -1,12 +1,14 @@
 {
-  "name": "frontend",
+  "name": "fake_news_detector",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "cra-template": "1.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-scripts": "5.0.1",
+    "react-helmet": "^6.1.0",
+    "react-router-dom": "^7.1.2",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
