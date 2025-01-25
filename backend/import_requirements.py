@@ -10,7 +10,6 @@ def setup_imports():
     from torch.utils.data import Dataset
     import torch
     import matplotlib.pyplot
-
     from fastapi import FastAPI, HTTPException
     import uvicorn
     from enum import Enum

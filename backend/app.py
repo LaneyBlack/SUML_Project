@@ -1,6 +1,8 @@
-from backend.import_requirements import os, FastAPI, HTTPException, uvicorn, Enum
+import json
+
+from backend.import_requirements import os, FastAPI, HTTPException, uvicorn, Enum, plt
 from model_construction import (organize_data, train_model)
-from model_methods import (generate_attention_map, predict_text, fine_tune_model)
+from model_methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 
 app = FastAPI()
 
@@ -8,6 +10,7 @@ app = FastAPI()
 DATA_DIR = "data/dataset.csv"
 COMPLETE_MODEL_DIR = "models/complete_model"
 MODEL_PATH = "models/complete_model"
+CHARTS_DIR = "charts"  # Directory where charts will be saved
 
 
 @app.get("/train")
@@ -21,7 +24,38 @@ def train_model_endpoint():
     except Exception as e:
         print(f"Training failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+@app.get("/generateChart")
+def generate_chart():
+    """
+    Generate a training and validation accuracy chart from saved log history.
+    """
+    log_file = "models/complete_model/log_history.json"
+    output_path = f"{CHARTS_DIR}/training_accuracy_chart.png"
 
+    try:
+        # Check if log history exists
+        if not os.path.exists(log_file):
+            raise HTTPException(status_code=404, detail="Log history file not found. Train the model first.")
+
+        # Load the log history
+        with open(log_file, "r") as f:
+            log_history = json.load(f)
+
+        # Extract training and validation accuracies
+        train_accuracies = [log["accuracy"] for log in log_history if "accuracy" in log]
+        val_accuracies = [log["eval_accuracy"] for log in log_history if "eval_accuracy" in log]
+
+        # Ensure both lists have the same length
+        min_length = min(len(train_accuracies), len(val_accuracies))
+        train_accuracies = train_accuracies[:min_length]
+        val_accuracies = val_accuracies[:min_length]
+
+        # Generate the plot
+        plot_training_history(train_accuracies, val_accuracies, output_path)
+
+        return {"message": "Chart generated successfully.", "chart_path": output_path}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}")
 
 @app.post("/attention-map")
 def attention_map_endpoint(text: str):

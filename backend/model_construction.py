@@ -1,8 +1,13 @@
+import json
+
 from backend.import_requirements import pd, os, train_test_split, DistilBertTokenizer, \
     DistilBertForSequenceClassification, Trainer, TrainingArguments, torch, accuracy_score, Dataset
 
+from transformers import TrainerCallback
+from sklearn.metrics import accuracy_score
 # Paths
 DATA_DIR = "data/dataset.csv"
+CHART_EPOCHS = "charts/training_accuracy.png"
 COMPLETE_MODEL_DIR = "models/complete_model"
 os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"  # Wyłączenie ostrzeżeń o symlinkach
 
@@ -55,8 +60,6 @@ def compute_metrics(eval_pred):
     return {"accuracy": acc}
 
 
-# Training Function
-
 def train_model(data):
     try:
         x = data["combined_text"]
@@ -88,15 +91,43 @@ def train_model(data):
             eval_dataset=test_dataset,
             compute_metrics=compute_metrics
         )
+
+        # Add the custom callback for training accuracy
+        callback = TrainingAccuracyCallback(trainer, train_dataset)
+        trainer.add_callback(callback)
         # Trening modelu
         trainer.train()
         # Ewaluacja modelu
         results = trainer.evaluate()
         print("Accuracy:", results["eval_accuracy"])
+
         # Zapis modelu
         model.save_pretrained(COMPLETE_MODEL_DIR)
         tokenizer.save_pretrained(COMPLETE_MODEL_DIR)
+
+        with open("models/complete_model/log_history.json", "w") as f:
+            json.dump(trainer.state.log_history, f)
         return results
     except Exception as e:
         print(f"Training failed: {e}")
         raise
+
+class TrainingAccuracyCallback(TrainerCallback):
+    def __init__(self, trainer, train_dataset):
+        self.trainer = trainer
+        self.train_dataset = train_dataset
+
+    def on_epoch_end(self, args, state, control, **kwargs):
+        # Use the trainer instance to make predictions
+        predictions = self.trainer.predict(self.train_dataset).predictions
+        preds = predictions.argmax(axis=1)
+
+        # Collect labels from the dataset
+        labels = [self.train_dataset[idx]['label'].item() for idx in range(len(self.train_dataset))]
+
+        # Calculate training accuracy
+        train_accuracy = accuracy_score(labels, preds)
+        print(f"Training Accuracy (Epoch {state.epoch}): {train_accuracy}")
+
+        # Log the training accuracy
+        state.log_history.append({"accuracy": train_accuracy, "epoch": state.epoch})

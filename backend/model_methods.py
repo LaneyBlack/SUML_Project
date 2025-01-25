@@ -88,6 +88,7 @@ def generate_attention_map(model_path, text, output_path="charts/attention_map.p
     plt.savefig(output_path)
     plt.close()
 
+
 import shutil
 
 
@@ -184,3 +185,24 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
             "loss_before": None,
             "loss_after": None
         }
+
+
+def plot_training_history(train_accuracies, val_accuracies, output_path="training_accuracy.png"):
+    try:
+        epochs = range(1, len(train_accuracies) + 1)  # Epoch indices
+        plt.figure(figsize=(10, 5))
+        plt.plot(epochs, train_accuracies, 'r-', label='train')  # Red line for training accuracy
+        plt.plot(epochs, val_accuracies, 'b-', label='val')  # Blue line for validation accuracy
+        plt.title('Model Accuracy')
+        plt.xlabel('Epochs')
+        plt.ylabel('Accuracy')
+        plt.legend(loc='upper left')
+        plt.grid(True)
+        plt.tight_layout()
+        # Save the plot
+        plt.savefig(output_path)
+        plt.close()
+
+        print(f"Training accuracy plot saved to {output_path}")
+    except Exception as e:
+        print(f"Failed to plot training history: {e}")
