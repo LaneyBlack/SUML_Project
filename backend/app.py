@@ -1,16 +1,52 @@
 import json
+import logging
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.responses import FileResponse
 
 from backend.import_requirements import os, FastAPI, HTTPException, uvicorn, Enum
 from backend.model.construction import (organize_data, train_model)
 from backend.model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
-
-app = FastAPI()
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
 COMPLETE_MODEL_DIR = "models/complete_model"
 MODEL_PATH = "models/complete_model"
 CHARTS_DIR = "charts"  # Directory where charts will be saved
+BACKEND_LOG = "log/backend.log"
+# Setup logger config
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(BACKEND_LOG),  # Log to file
+        logging.StreamHandler()  # Log to console
+    ]
+)
+# Create a logger instance
+logger = logging.getLogger(__name__)
+
+app = FastAPI()
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """
+    This is a middleware to log all the backend method executions
+    @param request: the request object with request body
+    @param call_next: The method that should be called to get the response body
+    @return: response to the client
+    """
+    logger.info(f"Incoming request: {request.method} {request.url}")
+    response = await call_next(request)
+    logger.info(f"Response status: {response.status_code}")
+    return response
+
+
+@app.get("/logs", response_class=FileResponse)
+def get_logs():
+    logger.info("Logs endpoint accessed")
+    return FileResponse(BACKEND_LOG, media_type="text/plain", filename="backend.log")
 
 
 @app.get("/train")
