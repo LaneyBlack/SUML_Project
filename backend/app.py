@@ -39,15 +39,14 @@ async def log_requests(request: Request, call_next):
     @param call_next: The method that should be called to get the response body
     @return: response to the client
     """
-    logger.info(f"Incoming request: {request.method} {request.url}")
     response = await call_next(request)
-    logger.info(f"Response status: {response.status_code}")
+    logger.info(f"Incoming request: {response.status_code} {request.method} {request.url} from {request.client.host}")
+    # logger.info(f"Response status: {response.status_code}")
     return response
 
 
 @app.get("/logs", response_class=PlainTextResponse)
 def get_logs():
-    logger.info("Logs endpoint accessed")
     try:
         # Read the log file content
         with open(BACKEND_LOG, "r") as file:
