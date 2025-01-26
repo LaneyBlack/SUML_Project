@@ -1,8 +1,8 @@
 import json
 
-from backend.import_requirements import os, FastAPI, HTTPException, uvicorn, Enum, plt
-from model_construction import (organize_data, train_model)
-from model_methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
+from backend.import_requirements import os, FastAPI, HTTPException, uvicorn, Enum
+from backend.model.construction import (organize_data, train_model)
+from backend.model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 
 app = FastAPI()
 

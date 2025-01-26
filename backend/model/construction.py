@@ -7,7 +7,7 @@ from transformers import TrainerCallback
 from sklearn.metrics import accuracy_score
 
 # Paths
-DATA_DIR = "data/dataset.csv"
+DATA_DIR = "../data/dataset.csv"
 CHART_EPOCHS = "charts/training_accuracy.png"
 COMPLETE_MODEL_DIR = "models/complete_model"
 os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"  # Wyłączenie ostrzeżeń o symlinkach

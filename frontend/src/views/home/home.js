@@ -13,132 +13,133 @@ const Home = (props) => {
         setBody(event.target.value); // Update the state with the new value
     };
 
-    return (<div className="home-container1">
-        <Helmet>
-            <title>Fake News Detector</title>
-            <meta property="og:title" content="Fake News Detector"/>
-        </Helmet>
-        <div className="home-main">
-            <img alt="image"
-                 src="https://news.stanford.edu/__data/assets/image/0021/41808/Fake-news-and-facts-digital-concept.jpeg"
-                 className="home-image"/>
-            <h1 className="title-h1">Fake News Detection</h1>
-            {/*<Link to="#user-manual" smooth>User manual</Link>*/}
-            <a href="/#user-manual" className="user-manual-link">User manual</a>
-            <div className="home-input">
+    return (
+        <div className="home-container1">
+            <Helmet>
+                <title>Fake News Detector</title>
+                <meta property="og:title" content="Fake News Detector"/>
+            </Helmet>
+            <div className="home-main">
+                <img alt="image"
+                     src="https://news.stanford.edu/__data/assets/image/0021/41808/Fake-news-and-facts-digital-concept.jpeg"
+                     className="home-image"/>
+                <h1 className="title-h1">Fake News Detection</h1>
+                {/*<Link to="#user-manual" smooth>User manual</Link>*/}
+                <a href="/#user-manual" className="user-manual-link">User manual</a>
+                <div className="home-input">
                     <span className="home-text12">
                         Paste the news into the text field 📰
                     </span>
-                <textarea
-                    placeholder="Title of Your news .."
-                    className="home-textarea1 textarea"
-                    value={title}
-                    onChange={handleTitle}
-                >
+                    <textarea
+                        placeholder="Title of Your news .."
+                        className="home-textarea1 textarea"
+                        value={title}
+                        onChange={handleTitle}
+                    >
                 </textarea>
-                <textarea
-                    placeholder="Body of your news .."
-                    className="home-textarea2 textarea"
-                    value={body}
-                    onChange={handleBody}
-                >
+                    <textarea
+                        placeholder="Body of your news .."
+                        className="home-textarea2 textarea"
+                        value={body}
+                        onChange={handleBody}
+                    >
                 </textarea>
-                {/*Title error*/}
-                <span className="error-text">
+                    {/*Title error*/}
+                    <span className="error-text">
                           * Oops! Please add a title to your news story before proceeding.
                 </span>
-                {/*Body error*/}
-                <span className="error-text">
+                    {/*Body error*/}
+                    <span className="error-text">
                         * Oops! The News is empty. Please add some text before proceeding.
                 </span>
-                {/*Low character error*/}
-                <span className="error-text">
+                    {/*Low character error*/}
+                    <span className="error-text">
                       * Text is too short. Please provide at least 100 characters.
                 </span>
-                {/*Too long error*/}
-                <span className="error-text">
+                    {/*Too long error*/}
+                    <span className="error-text">
                     * Text is too long. Please limit your input to 10,000 characters.
                 </span>
-                {/*Invalid input*/}
-                <span className="error-text">
+                    {/*Invalid input*/}
+                    <span className="error-text">
                       * Invalid input detected. Please use readable text (letters,
                       numbers, and punctuation).
                 </span>
-                {/*Buttons*/}
-                <div className="home-container2">
-                    <button type="button" className="reset-button button">
-                        Reset
-                    </button>
-                    <button type="button" className="train-button button">
-                        Train
-                    </button>
-                    <button type="button" className="predict-button button">
-                        Predict
-                    </button>
+                    {/*Buttons*/}
+                    <div className="home-container2">
+                        <button type="button" className="reset-button button">
+                            Reset
+                        </button>
+                        <button type="button" className="train-button button">
+                            Train
+                        </button>
+                        <button type="button" className="predict-button button">
+                            Predict
+                        </button>
+                    </div>
                 </div>
-            </div>
-            {/*---Loading animation---*/}
-            <svg width="24" height="24" viewBox="0 0 24 24" className="home-icon1">
-                <circle r="0" cx="18" cy="12" fill="currentColor">
-                    <animate
-                        dur="1.5s"
-                        begin=".67"
-                        values="0;2;0;0"
-                        calcMode="spline"
-                        keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
-                        repeatCount="indefinite"
-                        attributeName="r">
-                    </animate>
-                </circle>
-                <circle r="0" cx="12" cy="12" fill="currentColor">
-                    <animate
-                        dur="1.5s"
-                        begin=".33"
-                        values="0;2;0;0"
-                        calcMode="spline"
-                        keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
-                        repeatCount="indefinite"
-                        attributeName="r">
-                    </animate>
-                </circle>
-                <circle r="0" cx="6" cy="12" fill="currentColor">
-                    <animate
-                        dur="1.5s"
-                        begin="0"
-                        values="0;2;0;0"
-                        calcMode="spline"
-                        keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
-                        repeatCount="indefinite"
-                        attributeName="r"
-                    ></animate>
-                </circle>
-            </svg>
-            {/*---Output---*/}
-            <div className="home-output-fake1">
-                <span className="fake-output-text">FAKE</span>
-                <span className="fake-output-text-precision">🎯 Precision: 98% </span>
-            </div>
-            <div className="home-output-fact">
-                <span className="fact-output-text">FACT</span>
-                <span className="fact-output-text-precision">🎯 Precision: 99.9% </span>
-            </div>
-            {/*---User manual---*/}
-            <div id="user-manual" className="home-user-manual">
-                <h1 className="home-text32">
-                    Welcome to the Fake News Detection Tool!
-                </h1>
-                <span className="home-text33">
+                {/*---Loading animation---*/}
+                <svg width="24" height="24" viewBox="0 0 24 24" className="home-icon1">
+                    <circle r="0" cx="18" cy="12" fill="currentColor">
+                        <animate
+                            dur="1.5s"
+                            begin=".67"
+                            values="0;2;0;0"
+                            calcMode="spline"
+                            keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                            repeatCount="indefinite"
+                            attributeName="r">
+                        </animate>
+                    </circle>
+                    <circle r="0" cx="12" cy="12" fill="currentColor">
+                        <animate
+                            dur="1.5s"
+                            begin=".33"
+                            values="0;2;0;0"
+                            calcMode="spline"
+                            keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                            repeatCount="indefinite"
+                            attributeName="r">
+                        </animate>
+                    </circle>
+                    <circle r="0" cx="6" cy="12" fill="currentColor">
+                        <animate
+                            dur="1.5s"
+                            begin="0"
+                            values="0;2;0;0"
+                            calcMode="spline"
+                            keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                            repeatCount="indefinite"
+                            attributeName="r"
+                        ></animate>
+                    </circle>
+                </svg>
+                {/*---Output---*/}
+                <div className="home-output-fake1">
+                    <span className="fake-output-text">FAKE</span>
+                    <span className="fake-output-text-precision">🎯 Precision: 98% </span>
+                </div>
+                <div className="home-output-fact">
+                    <span className="fact-output-text">FACT</span>
+                    <span className="fact-output-text-precision">🎯 Precision: 99.9% </span>
+                </div>
+                {/*---User manual---*/}
+                <div id="user-manual" className="home-user-manual">
+                    <h1 className="home-text32">
+                        Welcome to the Fake News Detection Tool!
+                    </h1>
+                    <span className="home-text33">
                     Whether you’re here to bust some fake news or accidentally train
                     your own model into thinking everything is a conspiracy (please
                     don't), this guide will walk you through every step.
                     Let's get started!
                 </span>
-                <div className="home-container3">
+                    <div className="home-container3">
                     <span className="home-text34">
                       <span>Step 1: Input Some Text</span>
                       <br className="home-text36"></br>
                     </span>
-                    <span className="home-text37">
+                        <span className="home-text37">
                         <span>
                             Go to the input box. (You can’t miss it—it’s big and empty, like
                             your calendar on a Friday night.)
@@ -149,11 +150,11 @@ const Home = (props) => {
                             own conspiracy theory. The AI won’t judge... much.
                         </span>
                     </span>
-                    <span className="home-text41">
+                        <span className="home-text41">
                         <span>Step 2: Pick an Action</span>
                         <br className="home-text43"></br>
                     </span>
-                    <span className="home-text44">
+                        <span className="home-text44">
                         <span className="home-text45">
                             A) Reset (For Mistakes): If you change your mind, click the
                             Reset button. The text box will clear out, as if nothing ever
@@ -162,7 +163,7 @@ const Home = (props) => {
                         </span>
                         <br></br>
                     </span>
-                    <span className="home-text47">
+                        <span className="home-text47">
                       <span>
                         B) Train (Teach the AI): Click the Train button. A new popup
                         will appear asking for your input:Is the text you entered Fact
@@ -175,7 +176,7 @@ const Home = (props) => {
                       </span>
               <br></br>
             </span>
-                    <span className="home-text50">
+                        <span className="home-text50">
               <span>
                 C) Predict (Time for Judgment): Click the Predict button. The AI
                 will evaluate your text like a judge on a talent show. It will
@@ -186,7 +187,7 @@ const Home = (props) => {
               </span>
               <br></br>
             </span>
-                    <span className="home-text53">
+                        <span className="home-text53">
               <span>
                 Congratulations!
                 <span
@@ -213,14 +214,14 @@ const Home = (props) => {
               <br></br>
               <span>Now, go forth and detect!</span>
             </span>
+                    </div>
                 </div>
-            </div>
-            <span className="home-text63">
+                <span className="home-text63">
           <span>Made by Chrzczone Chrząszcze Team </span>
           <span className="home-text65">❤️</span>
         </span>
-        </div>
-    </div>)
+            </div>
+        </div>)
 }
 
 export default Home
