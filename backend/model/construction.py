@@ -10,10 +10,10 @@ from sklearn.metrics import accuracy_score
 
 # Paths
 DATA_DIR = "../data/dataset.csv"
-CHART_EPOCHS = "charts/training_accuracy.png"
-COMPLETE_MODEL_DIR = "models/complete_model"
+CHART_EPOCHS = "../charts/training_accuracy.png"
+COMPLETE_MODEL_DIR = "complete_model"
 os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"  # Wyłączenie ostrzeżeń o symlinkach
-
+MODEL_LOG = "../log/model_log.json"
 
 # Data Preparation
 def organize_data(model_data_path):
@@ -108,7 +108,7 @@ def train_model(data):
         model.save_pretrained(COMPLETE_MODEL_DIR)
         tokenizer.save_pretrained(COMPLETE_MODEL_DIR)
 
-        with open("models/complete_model/log_history.json", "w") as f:
+        with open(MODEL_LOG, "w") as f:
             json.dump(trainer.state.log_history, f)
         return results
     except Exception as e:
@@ -135,3 +135,21 @@ class TrainingAccuracyCallback(TrainerCallback):
 
         # Log the training accuracy
         state.log_history.append({"accuracy": train_accuracy, "epoch": state.epoch})
+
+
+def construct():
+    if not os.path.exists(DATA_DIR):
+        raise Exception(f"Data directory does not exist: {DATA_DIR}")
+
+    try:
+        data = organize_data(DATA_DIR)
+        results = train_model(data)
+        print(f"Model trained and saved successfully."
+              f"Results: {results}")
+    except Exception as e:
+        print(f"Training failed: {e}")
+        raise
+
+
+if __name__ == '__main__':
+    construct()
