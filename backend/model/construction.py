@@ -1,7 +1,9 @@
 import json
-
-from backend.import_requirements import pd, os, train_test_split, DistilBertTokenizer, \
-    DistilBertForSequenceClassification, Trainer, TrainingArguments, torch, accuracy_score, Dataset
+import os
+import pandas as pd
+import torch
+from torch.utils.data import Dataset
+from transformers import DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, TrainingArguments
 
 from transformers import TrainerCallback
 from sklearn.metrics import accuracy_score
