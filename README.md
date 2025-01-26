@@ -22,7 +22,9 @@ Aplikacja składa się z trzech głównych komponentów:
 3. **Frontend**  
    - Dostarcza intuicyjny interfejs użytkownika, umożliwiając łatwe korzystanie z funkcji aplikacji.  
 
-Dzięki takiej architekturze aplikacja jest modularna, co pozwala na łatwe rozdzielanie funkcjonalności między różne komponenty.
+![img.png](img.png)
+
+Dzięki takiej architekturze aplikacja jest modularna, co pozwala na łatwe rozdzielanie funkcjonalności między różnymi komponenty.
 
 ---
 
