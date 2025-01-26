@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import {Helmet} from 'react-helmet'
 // Relative imports
 import './home.css'
+import {backendService} from "../../components/backendService";
 
 const Home = (props) => {
     const [title, setTitle] = useState("");
@@ -12,6 +13,52 @@ const Home = (props) => {
     const handleBody = (event) => {
         setBody(event.target.value); // Update the state with the new value
     };
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState(null);
+    const [error, setError] = useState("");
+
+    const handlePredict = async () => {
+        setError("");
+        setResult(null);
+
+        if (!title.trim()) {
+            setError("* Oops! Please add a title to your news story before proceeding.");
+            return;
+        }
+        if (!body.trim()) {
+            setError("* Oops! The news body is empty. Please add some text before proceeding.");
+            return;
+        }
+        if (body.length < 100) {
+            setError("* Text is too short. Please provide at least 100 characters in the body.");
+            return;
+        }
+        if (body.length > 10000) {
+            setError("* Text is too long. Please limit your input to 10,000 characters.");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await backendService.predict(title, body);
+
+            if (response.error) {
+                setError(`* Error: ${response.error}`);
+            } else {
+                setResult({
+                message: response.message, // Displaying the success message
+                prediction: response.prediction.label, // "REAL" or "FAKE"
+                precision: response.prediction.confidence * 100, // Confidence as a percentage
+            });
+            }
+        } catch (err) {
+            setError("* An unexpected error occurred. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (<div className="main-container">
         <Helmet>
@@ -43,38 +90,36 @@ const Home = (props) => {
                     onChange={handleBody}
                 >
                 </textarea>
-                {/*Title error*/}
-                <span className="error-text">
-                          * Oops! Please add a title to your news story before proceeding.
-                </span>
-                {/*Body error*/}
-                <span className="error-text">
-                        * Oops! The News is empty. Please add some text before proceeding.
-                </span>
-                {/*Low character error*/}
-                <span className="error-text">
-                      * Text is too short. Please provide at least 100 characters.
-                </span>
-                {/*Too long error*/}
-                <span className="error-text">
-                    * Text is too long. Please limit your input to 10,000 characters.
-                </span>
-                {/*Invalid input*/}
-                <span className="error-text">
-                      * Invalid input detected. Please use readable text (letters,
-                      numbers, and punctuation).
-                </span>
+
+                {/* Display error messages */}
+                {error && <span className="error-text">{error}</span>}
+
                 {/*Buttons*/}
                 <div className="buttons-container">
-                    <button type="button" className="reset-button button">
+                    <button
+                        type="button"
+                        className="reset-button button"
+                        onClick={() => {
+                                setTitle("");
+                                setBody("");
+                                setError("");
+                                setResult(null);
+                            }}>
                         Reset
                     </button>
-                    <button type="button" className="predict-button button">
+                    <button
+                        type="button"
+                        className="predict-button button"
+                        onClick={handlePredict}
+                        disabled={loading}
+                        >
                         Predict
                     </button>
                 </div>
             </div>
+
             {/*---Loading animation---*/}
+            {loading && (
             <svg width="24" height="24" viewBox="0 0 24 24" className="home-icon1">
                 <circle r="0" cx="18" cy="12" fill="currentColor">
                     <animate
@@ -110,15 +155,26 @@ const Home = (props) => {
                     ></animate>
                 </circle>
             </svg>
+            )}
+
             {/*---Output---*/}
-            <div className="home-output-fake1">
-                <span className="fake-output-text">FAKE</span>
-                <span className="fake-output-text-precision">🎯 Precision: 98% </span>
-            </div>
-            <div className="home-output-fact">
-                <span className="fact-output-text">FACT</span>
-                <span className="fact-output-text-precision">🎯 Precision: 99.9% </span>
-            </div>
+            {result && result.prediction === "FAKE" && (
+                <div className="home-output-fake1">
+                    <span className="fake-output-text">FAKE</span>
+                    <span className="fake-output-text-precision">
+                        🎯 Precision: {result.precision}%
+                    </span>
+                </div>
+            )}
+
+            {result && result.prediction === "FACT" && (
+                <div className="home-output-fact">
+                    <span className="fact-output-text">FACT</span>
+                    <span className="fact-output-text-precision">
+                    🎯 Precision: {result.precision}%
+                    </span>
+                </div>
+            )}
             {/*---User manual---*/}
             <div id="user-manual" className="home-user-manual">
                 <h1 className="text-welcome-instruction">
