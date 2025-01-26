@@ -5,7 +5,7 @@ from enum import Enum
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
-from starlette.responses import FileResponse
+from starlette.responses import FileResponse, PlainTextResponse
 # Relative imports
 from backend.model.construction import (organize_data, train_model)
 from backend.model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
@@ -45,10 +45,16 @@ async def log_requests(request: Request, call_next):
     return response
 
 
-@app.get("/logs", response_class=FileResponse)
+@app.get("/logs", response_class=PlainTextResponse)
 def get_logs():
     logger.info("Logs endpoint accessed")
-    return FileResponse(BACKEND_LOG, media_type="text/plain", filename="backend.log")
+    try:
+        # Read the log file content
+        with open(BACKEND_LOG, "r") as file:
+            logs = file.read()
+        return logs
+    except FileNotFoundError:
+        return "Log file not found."
 
 
 @app.get("/train")
@@ -64,7 +70,7 @@ def train_model_endpoint():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/generateChart")
+@app.get("/generate-chart")
 def generate_chart():
     """
     Generate a training and validation accuracy chart from saved log history.
