@@ -2,21 +2,21 @@ const BASE_URL = 'http://127.0.0.1:5000'; // Base URL for the server
 
 export const backendService = {
     predict: async (title, text) => {
-        // return {
-        //     "message": "Prediction successful.",
-        //     "prediction": {
-        //         "label": "FAKE",
-        //         "confidence": 0.92
-        //     }
-        // };
-        //
-        // return {
-        //     "message": "Prediction successful.",
-        //     "prediction": {
-        //         "label": "FACT",
-        //         "confidence": 0.67
-        //     }
-        // };
+        return {
+            "message": "Prediction successful.",
+            "prediction": {
+                "label": "FAKE",
+                "confidence": 0.92
+            }
+        };
+
+        return {
+            "message": "Prediction successful.",
+            "prediction": {
+                "label": "FACT",
+                "confidence": 0.67
+            }
+        };
 
 
         try {
