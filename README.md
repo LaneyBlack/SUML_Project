@@ -113,11 +113,15 @@ Jeśli istnieje potrzeba wytrenowania modelu od nowa, administrator może to zro
 
 #### Swagger - backend endpoints:
 
-- **/fine-tune** 
-- **/predict** 
-- **/generate-chart** 
-- **/attention-map** 
-- **/logs**
+- `GET` **/generate-chart** - umożliwia generację chartu
+- `GET` **/logs** - umożliwia przejrzenie zdarzeń na Backendzie
+- `GET` **/docs** - umożliwia dostęp do Swagger 
+- `GET` **/openapi.json** - umożliwia dostęp do dokumentacji endpointów
+- `GET` **/redoc** - umożliwia dostęp do API docs by Redocly
+- `POST` **/fine-tune** - umożliwia dalsze trenowanie 
+- `POST` **/predict** - umożliwia predykcje podanego zestawu testów 
+- `POST` **/attention-map** - umożliwia wygenerowanie attention map dla podanego zestawu tekstu
+
 
 Logi serwera można przeglądać w pliku **backend.log**, dostępnym pod adresem: `http://localhost:8080/log`. Plik zawiera informacje o wykonanych akcjach w formacie:  
 `data | treść | akcja`
