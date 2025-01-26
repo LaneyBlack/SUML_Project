@@ -4,10 +4,12 @@ import {Helmet} from 'react-helmet'
 import './home.css'
 
 const Home = (props) => {
+    // Title logic
     const [title, setTitle] = useState("");
     const handleTitle = (event) => {
         setTitle(event.target.value); // Update the state with the new value
     };
+    // Body logic
     const [body, setBody] = useState("");
     const handleBody = (event) => {
         setBody(event.target.value); // Update the state with the new value
