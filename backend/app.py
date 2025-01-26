@@ -24,6 +24,8 @@ def train_model_endpoint():
     except Exception as e:
         print(f"Training failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.get("/generateChart")
 def generate_chart():
     """
@@ -57,6 +59,7 @@ def generate_chart():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}")
 
+
 @app.post("/attention-map")
 def attention_map_endpoint(text: str):
     """
@@ -89,6 +92,7 @@ class Label(str, Enum):
     REAL = "REAL"
     FAKE = "FAKE"
 
+
 @app.post("/fine-tune")
 def fine_tune_endpoint(title: str, text: str, label: Label):
     if not os.path.exists(COMPLETE_MODEL_DIR):
@@ -102,6 +106,7 @@ def fine_tune_endpoint(title: str, text: str, label: Label):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error during fine-tuning: {str(e)}")
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)

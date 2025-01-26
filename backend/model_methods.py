@@ -1,5 +1,6 @@
 from backend.import_requirements import plt, sns, DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, \
     TrainingArguments, torch, os
+import shutil
 
 
 def predict_text(title: str, text: str, model_path: str):
@@ -28,13 +29,13 @@ def predict_text(title: str, text: str, model_path: str):
 
     # Define custom labels (adjust as per your model training)
     id2label = {0: "REAL", 1: "FAKE"}  # Example mapping
-    label_name = id2label.get(predicted_label, f"LABEL_{predicted_label}")
+    label = id2label.get(predicted_label, f"{predicted_label}")
 
     # Confidence score for the predicted label
     confidence = probabilities[predicted_label] * 100
 
     return {
-        "label_name": label_name,
+        "label": label,
         "confidence": round(confidence, 2)  # Confidence as a percentage
     }
 
@@ -79,17 +80,18 @@ def generate_attention_map(model_path, text, output_path="charts/attention_map.p
         annot=False,
         cbar=True
     )
+
     plt.xticks(rotation=45, ha="right", fontsize=10)
     plt.yticks(fontsize=10)
+
     plt.title("Attention Map (Limited to Top {} Tokens)".format(max_tokens))
     plt.xlabel("Input Tokens")
     plt.ylabel("Input Tokens")
+
     plt.tight_layout()
+
     plt.savefig(output_path)
     plt.close()
-
-
-import shutil
 
 
 def fine_tune_model(model_path: str, title: str, text: str, label: str):

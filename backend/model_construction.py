@@ -5,6 +5,7 @@ from backend.import_requirements import pd, os, train_test_split, DistilBertToke
 
 from transformers import TrainerCallback
 from sklearn.metrics import accuracy_score
+
 # Paths
 DATA_DIR = "data/dataset.csv"
 CHART_EPOCHS = "charts/training_accuracy.png"
@@ -111,6 +112,7 @@ def train_model(data):
     except Exception as e:
         print(f"Training failed: {e}")
         raise
+
 
 class TrainingAccuracyCallback(TrainerCallback):
     def __init__(self, trainer, train_dataset):
