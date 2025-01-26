@@ -54,7 +54,7 @@ Dzięki takiej architekturze aplikacja jest modularna, co pozwala na łatwe rozd
 
 4. Uruchom backend aplikacji:  
    `python3 app.py`  
-   Aplikacja uruchomi się na lokalnym serwerze pod adresem: `http://localhost:8000/swagger` (z użyciem FastAPI).
+   Aplikacja uruchomi się na lokalnym serwerze pod adresem: `http://localhost:5000/swagger` (z użyciem FastAPI).
 
 ### Kroki Frontend:
 
@@ -113,18 +113,18 @@ Jeśli istnieje potrzeba wytrenowania modelu od nowa, administrator może to zro
 
 #### Swagger - backend endpoints:
 
-- `GET` **/generate-chart** - umożliwia generację chartu
-- `GET` **/logs** - umożliwia przejrzenie zdarzeń na Backendzie
-- `GET` **/docs** - umożliwia dostęp do Swagger 
-- `GET` **/openapi.json** - umożliwia dostęp do dokumentacji endpointów
-- `GET` **/redoc** - umożliwia dostęp do API docs by Redocly
-- `POST` **/fine-tune** - umożliwia dalsze trenowanie 
-- `POST` **/predict** - umożliwia predykcje podanego zestawu testów 
-- `POST` **/attention-map** - umożliwia wygenerowanie attention map dla podanego zestawu tekstu
+- `GET` `/generate-chart` - umożliwia generację chartu
+- `GET` `/logs` - umożliwia przejrzenie zdarzeń na Backendzie
+- `GET` `/docs` - umożliwia dostęp do Swagger 
+- `GET` `/openapi.json` - umożliwia dostęp do dokumentacji endpointów
+- `GET` `/redoc` - umożliwia dostęp do API docs by Redocly
+- `POST` `/fine-tune` - umożliwia dalsze trenowanie 
+- `POST` `/predict` - umożliwia predykcje podanego zestawu testów 
+- `POST` `/attention-map` - umożliwia wygenerowanie attention map dla podanego zestawu tekstu
 
 
-Logi serwera można przeglądać w pliku **backend.log**, dostępnym pod adresem: `http://localhost:8080/log`. Plik zawiera informacje o wykonanych akcjach w formacie:  
-`data | treść | akcja`
+Logi serwera można przeglądać w pliku **backend.log**, dostępnym pod adresem: `http://localhost:5000/logs`. Plik zawiera informacje o wykonanych akcjach w formacie:  
+`data - treść - akcja`
 
 Do analizy każdego treningu modelu używany jest plik **model_log.json**, który zawiera dane takie jak: loss, grad_norm, learning_rate, epoch, i step.
 
