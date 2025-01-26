@@ -1,10 +1,12 @@
 import json
 import logging
-from fastapi.middleware.cors import CORSMiddleware
+import os
+from enum import Enum
+import uvicorn
+from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
 from starlette.responses import FileResponse
-
-from backend.import_requirements import os, FastAPI, HTTPException, uvicorn, Enum
+# Relative imports
 from backend.model.construction import (organize_data, train_model)
 from backend.model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 
