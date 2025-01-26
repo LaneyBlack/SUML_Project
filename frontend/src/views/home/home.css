@@ -1,4 +1,4 @@
-.home-container1 {
+.main-container {
   width: 100%;
   display: flex;
   overflow: auto;
@@ -26,7 +26,7 @@
   margin-bottom: var(--dl-space-space-oneandhalfunits);
 }
  
-.title-h1 {
+.main-title {
   color: rgb(58, 71, 77);
   width: 80%;
   display: flex;
@@ -58,14 +58,14 @@
   background-color: rgba(152, 152, 152, 0.1);
 }
  
-.home-text12 {
+.home-text-past {
   color: var(--dl-color-primary);
   font-size: 1em;
   align-self: center;
   font-weight: 600;
 }
  
-.home-textarea1 {
+.textarea-name {
   color: var(--dl-color-black);
   width: 85%;
   height: 86px;
@@ -79,11 +79,11 @@
   padding: 1.5em 1.5rem;
 }
 
-.home-textarea1:focus {
+.textarea-name:focus {
   color: var(--dl-color-black);
 }
  
-.home-textarea2 {
+.textarea-body {
   color: var(--dl-color-black);
   width: 85%;
   height: 300px;
@@ -97,108 +97,8 @@
   padding: 1.5em 1.5rem;
 }
 
-.home-textarea2:focus {
+.textarea-body:focus {
   color: var(--dl-color-black);
-}
- 
-.home-text13 {
-  color: rgba(0, 0, 0, 0.52);
-  width: 85%;
-  font-size: 1em;
-  align-self: center;
-  text-align: left;
-  font-family: "Poppins";
-  font-weight: 600;
-  margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
-  margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
-  border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
-}
- 
-.home-text14 {
-  color: var(--dl-color-primary);
-  font-style: normal;
-  font-weight: 500;
-}
- 
-.home-text16 {
-  color: rgba(0, 0, 0, 0.52);
-  width: 85%;
-  font-size: 1em;
-  align-self: center;
-  text-align: left;
-  font-family: "Poppins";
-  font-weight: 600;
-  margin-left: var(--dl-space-space-halfunit);
-  padding-top: var(--dl-space-space-oneandhalfunits);
-  margin-right: var(--dl-space-space-halfunit);
-  padding-left: var(--dl-space-space-oneandhalfunits);
-  border-radius: 20px;
-  padding-right: var(--dl-space-space-oneandhalfunits);
-  padding-bottom: var(--dl-space-space-oneandhalfunits);
-}
- 
-.home-text17 {
-  color: var(--dl-color-primary);
-  font-style: normal;
-  font-weight: 500;
-}
- 
-.home-text19 {
-  color: rgba(0, 0, 0, 0.5);
-  width: 85%;
-  font-size: 1em;
-  align-self: center;
-  text-align: left;
-  font-family: "Poppins";
-  font-weight: 600;
-  margin-left: var(--dl-space-space-halfunit);
-  margin-right: var(--dl-space-space-halfunit);
-  border-radius: 20px;
-  padding: var(--dl-space-space-oneandhalfunits);
-}
- 
-.home-text20 {
-  color: var(--dl-color-primary);
-  font-style: normal;
-  font-weight: 500;
-}
- 
-.home-text22 {
-  color: rgba(0, 0, 0, 0.5);
-  width: 85%;
-  font-size: 1em;
-  align-self: center;
-  text-align: left;
-  font-family: "Poppins";
-  font-weight: 600;
-  margin-left: var(--dl-space-space-halfunit);
-  margin-right: var(--dl-space-space-halfunit);
-  border-radius: 20px;
-  padding: var(--dl-space-space-oneandhalfunits);
-}
- 
-.home-text23 {
-  color: var(--dl-color-primary);
-  font-style: normal;
-  font-weight: 500;
-}
- 
-.home-text25 {
-  color: rgba(0, 0, 0, 0.5);
-  width: 85%;
-  font-size: 1em;
-  align-self: center;
-  text-align: left;
-  font-family: "Poppins";
-  font-weight: 600;
-  margin-left: var(--dl-space-space-halfunit);
-  margin-right: var(--dl-space-space-halfunit);
-  border-radius: 20px;
-  padding: var(--dl-space-space-oneandhalfunits);
 }
  
 .error-text {
@@ -216,7 +116,7 @@
   font-style: normal;
 }
  
-.home-container2 {
+.buttons-container {
   gap: 40px;
   flex: 0 0 auto;
   width: 85%;
@@ -251,26 +151,26 @@
   background-color: #bebebe;
 }
  
-.train-button {
-  color: var(--dl-color-white);
-  width: 8em;
-  height: 2.5em;
-  font-size: 1.3em;
-  font-style: normal;
-  font-family: "Poppins", serif;
-  font-weight: 600;
-  border-width: 0px;
-  border-radius: 40px;
-  background-color: var(--dl-color-green);
-}
+/*.train-button {*/
+/*  color: var(--dl-color-white);*/
+/*  width: 8em;*/
+/*  height: 2.5em;*/
+/*  font-size: 1.3em;*/
+/*  font-style: normal;*/
+/*  font-family: "Poppins", serif;*/
+/*  font-weight: 600;*/
+/*  border-width: 0px;*/
+/*  border-radius: 40px;*/
+/*  background-color: var(--dl-color-green);*/
+/*}*/
 
-.train-button:hover {
-  background-color: var(--dl-color-green-l1);
-}
+/*.train-button:hover {*/
+/*  background-color: var(--dl-color-green-l1);*/
+/*}*/
 
-.train-button:active {
-  background-color: var(--dl-color-green-l2);
-}
+/*.train-button:active {*/
+/*  background-color: var(--dl-color-green-l2);*/
+/*}*/
  
 .predict-button {
   color: var(--dl-color-white);
@@ -380,7 +280,7 @@
   padding-bottom: var(--dl-space-space-oneandhalfunits);
 }
  
-.home-text32 {
+.text-welcome-instruction {
   color: rgb(58, 71, 77);
   width: 80%;
   display: flex;
@@ -391,7 +291,7 @@
   justify-content: center;
 }
  
-.home-text33 {
+.text-intro {
   color: rgba(0, 0, 0, 0.52);
   width: 90%;
   font-size: 1em;
@@ -402,7 +302,7 @@
   padding-right: var(--dl-space-space-halfunit);
 }
  
-.home-container3 {
+.instructions-container {
   gap: var(--dl-space-space-oneandhalfunits);
   flex: 0 0 auto;
   display: flex;
@@ -410,7 +310,7 @@
   flex-direction: column;
 }
  
-.home-text34 {
+.instructions-title {
   color: rgba(0, 0, 0, 0.52);
   width: 90%;
   font-size: 1.5em;
@@ -424,11 +324,7 @@
   background-color: rgba(206, 206, 206, 0.21);
 }
  
-.home-text36 {
-  font-weight: 500;
-}
- 
-.home-text37 {
+.instruction-text {
   color: rgba(0, 0, 0, 0.52);
   width: 90%;
   font-size: 1em;
@@ -441,105 +337,9 @@
   padding: var(--dl-space-space-oneandhalfunits);
   background-color: rgba(206, 206, 206, 0.21);
 }
- 
-.home-text41 {
-  color: rgba(0, 0, 0, 0.52);
-  width: 90%;
-  font-size: 1.5em;
-  align-self: center;
-  text-align: left;
-  font-weight: 600;
-  margin-left: var(--dl-space-space-halfunit);
-  margin-right: var(--dl-space-space-halfunit);
-  border-radius: 20px;
-  padding: var(--dl-space-space-oneandhalfunits);
-  background-color: rgba(206, 206, 206, 0.21);
-}
- 
-.home-text43 {
-  font-weight: 500;
-}
- 
-.home-text44 {
-  color: rgba(0, 0, 0, 0.52);
-  width: 90%;
-  font-size: 1em;
-  align-self: center;
-  text-align: left;
-  font-weight: 600;
-  margin-left: var(--dl-space-space-halfunit);
-  margin-right: var(--dl-space-space-halfunit);
-  border-radius: 20px;
-  padding: var(--dl-space-space-oneandhalfunits);
-  background-color: rgba(206, 206, 206, 0.21);
-}
- 
-.home-text45 {
-  font-weight: 500;
-}
- 
-.home-text47 {
-  color: rgba(0, 0, 0, 0.52);
-  width: 90%;
-  font-size: 1em;
-  align-self: center;
-  text-align: left;
-  font-weight: 500;
-  margin-left: var(--dl-space-space-halfunit);
-  margin-right: var(--dl-space-space-halfunit);
-  border-radius: 20px;
-  padding: var(--dl-space-space-oneandhalfunits);
-  background-color: rgba(206, 206, 206, 0.21);
-}
- 
-.home-text50 {
-  color: rgba(0, 0, 0, 0.52);
-  width: 90%;
-  font-size: 1em;
-  align-self: center;
-  text-align: left;
-  font-weight: 500;
-  margin-left: var(--dl-space-space-halfunit);
-  margin-right: var(--dl-space-space-halfunit);
-  border-radius: 20px;
-  padding: var(--dl-space-space-oneandhalfunits);
-  background-color: rgba(206, 206, 206, 0.21);
-}
- 
-.home-text53 {
-  color: rgba(0, 0, 0, 0.52);
-  width: 90%;
-  font-size: 1em;
-  align-self: center;
-  text-align: left;
-  font-weight: 500;
-  padding-left: var(--dl-space-space-halfunit);
-  padding-right: var(--dl-space-space-halfunit);
-}
- 
-.home-text55 {
-  color: #000000;
-}
- 
-.home-text63 {
-  color: rgba(0, 0, 0, 0.52);
-  width: 90%;
-  font-size: 1em;
-  align-self: center;
-  margin-top: var(--dl-space-space-oneandhalfunits);
-  text-align: center;
-  font-weight: 500;
-  padding-left: var(--dl-space-space-halfunit);
-  margin-bottom: var(--dl-space-space-oneandhalfunits);
-  padding-right: var(--dl-space-space-halfunit);
-}
- 
-.home-text65 {
-  color: #000000;
-}
- 
+
 @media(max-width: 991px) {
-  .home-text12 {
+  .home-text-past {
     width: 90%;
     align-self: center;
     text-align: center;
@@ -557,7 +357,7 @@
 }
  
 @media(max-width: 767px) {
-  .home-container2 {
+  .buttons-container {
     gap: var(--dl-space-space-halfunit);
     display: flex;
     align-items: center;
