@@ -12,29 +12,27 @@ Fake News Detector jest praktycznym narzędziem zarówno dla zwykłych użytkown
 ## 🏗️ Struktura aplikacji  
 Aplikacja składa się z trzech głównych komponentów:  
 
-1. **Model**  
-   - Odpowiada za analizę i ocenę danych wprowadzonych przez użytkownika.  
+1. **Model** - odpowiada za analize danych wprowadzonych, tworzony jest za pomocą złożonego DistilBERT i natrenowany na własnych danych  
 
 2. **Backend**  
    - Zarządza przepływem danych między modelem a użytkownikiem.  
    - Umożliwia administratorom nadzorowanie oraz ulepszanie modelu.  
 
-3. **Frontend**  
-   - Dostarcza intuicyjny interfejs użytkownika, umożliwiając łatwe korzystanie z funkcji aplikacji.  
+3. **Frontend SPA** - Dostarcza intuicyjny interfejs użytkownika, umożliwiając łatwe korzystanie z funkcji aplikacji.  
 
 ![img.png](img.png)
 
-Dzięki takiej architekturze aplikacja jest modularna, co pozwala na łatwe rozdzielanie funkcjonalności między różnymi komponenty.
+Dzięki takiej architekturze aplikacja jest modularna, co pozwala na łatwe rozdzielenie funkcjonalności między różnymi komponentami.
 
 ---
 
 ## ⚙️ Instrukcja uruchomienia  
 
 ### Wymagania:  
-- **React npm**: 10.9.1  
-- **Node.js**: 23.3.0  
-- **Python**: 3.9 lub wyższy  
-- **Git**
+- **React npm** 10.9.1  
+- **Node.js** 23.3.0  
+- **Python** 3.9 lub wyższy  
+- **Git** 2.0 lub wyższy
 
 ### Kroki Pobierania:
 
@@ -63,8 +61,22 @@ Dzięki takiej architekturze aplikacja jest modularna, co pozwala na łatwe rozd
 1. Przejdź do folderu frontendu:  
    `cd frontend`
 
-2. Zainstaluj wymagane biblioteki:  
-   `npm install`
+2. Instalacja Node.js
+
+   Linux:
+   
+   `sudo apt-get install -y nodejs`
+   
+   `sudo npm install -g npm`
+
+   Windows:
+   
+   Pobrać Node.js LTS (Long-Term Support) z podanej strony internetowej 
+   
+   https://nodejs.org/en
+
+   Run the `.msi` file.
+
 
 3. Aby stworzyć wersję produkcyjną aplikacji React:  
    `npm run build`  
