@@ -1,8 +1,8 @@
 import os
 import shutil
 import seaborn
-import matplotlib.pyplot as plt
 import torch
+import matplotlib.pyplot as plt
 from transformers import DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, TrainingArguments
 
 
