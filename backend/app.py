@@ -7,8 +7,8 @@ from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
 from starlette.responses import FileResponse, PlainTextResponse
 # Relative imports
-from backend.model.construction import (organize_data, train_model)
-from backend.model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
+from model.construction import (organize_data, train_model)
+from model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
