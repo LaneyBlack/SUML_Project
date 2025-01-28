@@ -12,7 +12,7 @@ from transformers import (
     DistilBertTokenizer, DistilBertForSequenceClassification,
     Trainer, TrainingArguments
 )
-from backend.models.prediction import Label
+from ..models.prediction import Label
 
 
 MODEL_PATH = "ml_model/complete_model"
