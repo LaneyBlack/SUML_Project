@@ -17,7 +17,7 @@ class Label(str, Enum):
 
 class Prediction(BaseModel):
     """
-    Prediction model is a class mostly used for transferring and storing data
+    Prediction ml_model is a class mostly used for transferring and storing data
     @param
         title(str) - Title of the News
         text(str) - Text of the News

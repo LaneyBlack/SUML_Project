@@ -1,6 +1,6 @@
 """
-This module provides model construction with:
-functionality for organizing data, training a DistilBERT-based model,
+This module provides ml_model construction with:
+functionality for organizing data, training a DistilBERT-based ml_model,
 and evaluating its performance for fake news classification.
 """
 import os
@@ -27,7 +27,7 @@ MODEL_LOG = "../log/model_log.json"
 # Data Preparation
 def organize_data(model_data_path):
     """
-      Organize and preprocess the data for the model.
+      Organize and preprocess the data for the ml_model.
       Args:
           model_data_path (str): Path to the dataset CSV file.
       Returns:
@@ -90,7 +90,7 @@ class FakeNewsDataset(Dataset):
 
 def compute_metrics(eval_pred):
     """
-    Compute evaluation metrics for the model.
+    Compute evaluation metrics for the ml_model.
     Args:
         eval_pred (tuple): Tuple containing logits and labels.
     Returns:
@@ -119,7 +119,7 @@ def prepare_datasets(data, tokenizer, max_length):
     """
     Prepare training and testing datasets from the provided data.
     This function splits the input data into training and testing sets, tokenizes the text data,
-    and creates PyTorch datasets for use in model training and evaluation.
+    and creates PyTorch datasets for use in ml_model training and evaluation.
     Args:
         data (pandas.DataFrame): A DataFrame containing the combined text column ("combined_text")
             and binary labels column ("fake").
@@ -144,7 +144,7 @@ def prepare_datasets(data, tokenizer, max_length):
 
 def train_model(data):
     """
-    Train and evaluate a DistilBERT model on the provided data.
+    Train and evaluate a DistilBERT ml_model on the provided data.
     Args:
         data (pandas.DataFrame): Preprocessed data containing combined text and binary labels.
     Returns:
@@ -183,13 +183,13 @@ def train_model(data):
         # Add the custom callback for training accuracy
         callback = TrainingAccuracyCallback(trainer, train_dataset)
         trainer.add_callback(callback)
-        # Training model
+        # Training ml_model
         trainer.train()
-        # Evaluate model
+        # Evaluate ml_model
         results = trainer.evaluate()
         print("Accuracy:", results["eval_accuracy"])
 
-        # Save the model
+        # Save the ml_model
         model.save_pretrained(COMPLETE_MODEL_DIR)
         tokenizer.save_pretrained(COMPLETE_MODEL_DIR)
 
@@ -237,7 +237,7 @@ class TrainingAccuracyCallback(TrainerCallback):
 
 def construct():
     """
-        Main function to organize data and train the model.
+        Main function to organize data and train the ml_model.
         Raises:
             Exception: If the dataset path is invalid or training fails.
     """
@@ -247,7 +247,7 @@ def construct():
     try:
         print("---Organising the data---")
         data = organize_data(DATA_DIR)
-        print("---Training a model---")
+        print("---Training a ml_model---")
         results = train_model(data)
         print(f"---Model trained and saved successfully.---")
         print(f"Results: {results}")

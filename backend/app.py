@@ -1,5 +1,5 @@
 """
-This module provides a FastAPI-based backend for model operations,
+This module provides a FastAPI-based backend for ml_model operations,
 including generating attention maps, predictions, training charts, and fine-tuning.
 """
 
@@ -14,12 +14,12 @@ from starlette.responses import PlainTextResponse, StreamingResponse
 
 # Relative imports
 from models.prediction import Prediction
-from model.construction import (construct)
-from model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
+from ml_model.construction import (construct)
+from ml_model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
-MODEL_DIR = "model/complete_model"
+MODEL_DIR = "ml_model/complete_model"
 CHARTS_DIR = "charts"  # Directory where charts will be saved
 MODEL_LOG = "log/model_log.json"
 BACKEND_LOG = "log/backend.log"
@@ -68,8 +68,11 @@ def get_logs():
         return "Log file not found."
 
 
-@app.get("/train")
-def train_model_endpoint():
+@app.get("/construct")
+def construct_model():
+    """
+    Construct a ml_model from scratch endpoint
+    """
     if not os.path.exists(DATA_DIR):
         raise HTTPException(status_code=404, detail="Dataset not found.")
     try:
@@ -90,7 +93,7 @@ def generate_chart():
     try:
         # Check if log history exists
         if not os.path.exists(MODEL_LOG):
-            raise HTTPException(status_code=404, detail="Log history file not found. Train the model first.")
+            raise HTTPException(status_code=404, detail="Log history file not found. Train the ml_model first.")
 
         # Load the log history
         with open(MODEL_LOG, "r") as f:
@@ -127,7 +130,7 @@ def attention_map_endpoint(text: str):
     Generate an attention map for the given text.
     """
     if not os.path.exists(MODEL_DIR):
-        raise HTTPException(status_code=404, detail="Trained model not found.")
+        raise HTTPException(status_code=404, detail="Trained ml_model not found.")
     try:
         output_path = f"{CHARTS_DIR}/attention_map.png"
         generate_attention_map(text=text, output_path=output_path)
@@ -146,7 +149,7 @@ def attention_map_endpoint(text: str):
 @app.post("/predict")
 async def predict_endpoint(request: Prediction):
     """
-        Predict the label for the given title and text using the trained model.
+        Predict the label for the given title and text using the trained ml_model.
         Args:
             request(Prediction): Custom class for representing prediction
                 title (str): The title of the text.
@@ -167,7 +170,7 @@ async def predict_endpoint(request: Prediction):
 @app.post("/fine-tune")
 def fine_tune_endpoint(request: Prediction):
     """
-    Fine-tune the trained model using the given title, text, and label.
+    Fine-tune the trained ml_model using the given title, text, and label.
 
     Args:
         request (Prediction):
@@ -178,7 +181,7 @@ def fine_tune_endpoint(request: Prediction):
         dict: A dictionary containing the fine-tuning results, including the loss before and after.
     """
     if not os.path.exists(MODEL_DIR):
-        raise HTTPException(status_code=404, detail="Trained model not found.")
+        raise HTTPException(status_code=404, detail="Trained ml_model not found.")
     try:
         results = fine_tune_model(model_path=MODEL_DIR, title=request.title, text=request.text, label=request.label)
         return {

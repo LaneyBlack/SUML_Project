@@ -1,6 +1,6 @@
 """
 This module contains utility functions and classes for text classification,
-fine-tuning a model, generating attention maps, and plotting training history.
+fine-tuning a ml_model, generating attention maps, and plotting training history.
 """
 import os
 import io
@@ -12,22 +12,22 @@ from transformers import (
     DistilBertTokenizer, DistilBertForSequenceClassification,
     Trainer, TrainingArguments
 )
-from backend.requests.requests import Label
+from ..models.prediction import Label
 
 
-MODEL_PATH = "model/complete_model"
+MODEL_PATH = "ml_model/complete_model"
 
 tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
 model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
 # tokenizer = DistilBertTokenizer.from_pretrained("complete_model")
-# tokenizer.save_pretrained("model/complete_model")
-# model = DistilBertForSequenceClassification.from_pretrained("complete_model")
-# model.save_pretrained("model/complete_model")
+# tokenizer.save_pretrained("ml_model/complete_model")
+# ml_model = DistilBertForSequenceClassification.from_pretrained("complete_model")
+# ml_model.save_pretrained("ml_model/complete_model")
 
 
 def predict_text(title: str, text: str):
     """
-    Predict the label for the given title and text using the trained model.
+    Predict the label for the given title and text using the trained ml_model.
 
     Args:
         title (str): The title of the text.
@@ -91,7 +91,7 @@ def generate_attention_map(text, output_path="charts/attention_map.png", max_tok
         max_length=128
     )
 
-    # Get attention weights from the model
+    # Get attention weights from the ml_model
     with torch.no_grad():
         outputs = model(**inputs, output_attentions=True)
         attentions = outputs.attentions  # List of attention weights
@@ -183,10 +183,10 @@ class FineTuneDataset(torch.utils.data.Dataset):
 
 def fine_tune_model(model_path: str, title: str, text: str, label: Label):
     """
-    Fine-tune the model using the given text and label.
+    Fine-tune the ml_model using the given text and label.
 
     Args:
-        model_path (str): Path to the trained model.
+        model_path (str): Path to the trained ml_model.
         title (str): The title of the text.
         text (str): The main content of the text.
         label (Label): The label associated with the text ("REAL" or "FAKE").
@@ -237,12 +237,12 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
         # Calculate loss after training
         loss_after = calculate_loss(input_text, label_id)
 
-        # Temp folder to save the model
+        # Temp folder to save the ml_model
         temp_model_path = f"{model_path}_temp"
         if os.path.exists(temp_model_path):
             shutil.rmtree(temp_model_path)  # Remove the temp folder if it exists
 
-        # Saving pretrained temp model
+        # Saving pretrained temp ml_model
         model.save_pretrained(temp_model_path)
         tokenizer.save_pretrained(temp_model_path)
         # save_model(temp_model_path)
@@ -270,10 +270,10 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
 
 # def save_model(temp_model_path):
 #     """
-#     Save the model and tokenizer to the specified temporary path.
+#     Save the ml_model and tokenizer to the specified temporary path.
 #     Args:
 #         temp_model_path (str):
-#             The temporary directory path where the model and tokenizer will be saved.
+#             The temporary directory path where the ml_model and tokenizer will be saved.
 #     Returns:
 #         None
 #     """
