@@ -25,4 +25,4 @@ class Prediction(BaseModel):
     """
     title: str
     text: str
-    label: Optional[Label]
+    label: Optional[Label] = None

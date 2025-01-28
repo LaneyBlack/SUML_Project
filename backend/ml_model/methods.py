@@ -12,7 +12,7 @@ from transformers import (
     DistilBertTokenizer, DistilBertForSequenceClassification,
     Trainer, TrainingArguments
 )
-from ..models.prediction import Label
+from backend.models.prediction import Label
 
 
 MODEL_PATH = "ml_model/complete_model"
@@ -56,8 +56,8 @@ def predict_text(title: str, text: str):
     predicted_label = torch.argmax(logits, dim=1).item()
 
     # Match label with its name for displaying
-    label = Label(predicted_label).name
-
+    label_mapping = {0: Label.REAL, 1: Label.FAKE}
+    label = label_mapping[predicted_label].name
     # Confidence score for the predicted label
     confidence = probabilities[predicted_label] * 100
 
@@ -192,6 +192,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
         label (Label): The label associated with the text ("REAL" or "FAKE").
             value (int): The value of this Enum
             name (string): String associated with this Enum state
+
     Returns:
         dict:
             A dictionary containing the fine-tuning message & loss values.

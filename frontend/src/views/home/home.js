@@ -46,10 +46,11 @@ const Home = (props) => {
             if (response.error) {
                 setError(`* Error: ${response.error}`);
             } else {
+                console.log(response)
                 setResult({
                     message: response.message, // Displaying the success message
                     prediction: response.prediction.label, // "REAL" or "FAKE"
-                    precision: response.prediction.confidence * 100, // Confidence as a percentage
+                    precision: response.prediction.confidence, // Confidence as a percentage
                 });
             }
         } catch (err) {
@@ -167,7 +168,7 @@ const Home = (props) => {
                 </div>
             )}
 
-            {result && result.prediction === "FACT" && (
+            {result && result.prediction === "REAL" && (
                 <div className="home-output-fact">
                     <span className="fact-output-text">FACT</span>
                     <span className="fact-output-text-precision">

@@ -6,21 +6,21 @@ including generating attention maps, predictions, training charts, and fine-tuni
 import json
 import logging
 import os
-from enum import Enum
 import uvicorn
+from typing import Optional
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import PlainTextResponse, StreamingResponse
-
 # Relative imports
-from models.prediction import Prediction
 from ml_model.construction import (construct)
 from ml_model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
+from models.prediction import Prediction
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
 MODEL_DIR = "ml_model/complete_model"
-CHARTS_DIR = "charts"  # Directory where charts will be saved
+CHARTS_DIR = "log/charts"  # Directory where charts will be saved
 MODEL_LOG = "log/model_log.json"
 BACKEND_LOG = "log/backend.log"
 
@@ -37,6 +37,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 # Application definition
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (GET, POST, OPTIONS, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 
 @app.middleware("http")
@@ -52,23 +59,52 @@ async def log_requests(request: Request, call_next):
     return response
 
 
-@app.get("/logs", response_class=PlainTextResponse)
-def get_logs():
+@app.get("/", tags=["intro"])
+async def index():
+    return {"message": "Welcome to the Fake News Detector"}
+
+
+@app.get("/logs", tags=['info'], response_class=PlainTextResponse)
+def get_logs(limit: Optional[int] = 1000):
     """
-        Retrieve the backend logs.
-        Returns:
-            str: The content of the log file.
+    Retrieve the backend logs.
+    Args:
+        limit (int, optional): Number of lines to fetch from the log file. Default is 1000.
+    Returns:
+        str: The content of the log file or an error message.
     """
     try:
-        # Read the log file content
+        # Open the log file
         with open(BACKEND_LOG, "r") as file:
-            logs = file.read()
-        return logs
+            # Read the last `limit` number of lines (to avoid loading too much data)
+            logs = file.readlines()
+            logs = logs[-limit:]  # Get the last `limit` lines
+        # Return logs as a single string
+        return "".join(logs)
     except FileNotFoundError:
-        return "Log file not found."
+        # Return a custom error message if the file is not found
+        return "Log file not found. Please check the file path."
+    except Exception as e:
+        # Return a generic error message in case of any other exception
+        return f"An error occurred: {str(e)}"
 
 
-@app.get("/construct")
+@app.delete("/logs", tags=['info'], response_class=PlainTextResponse)
+def clear_logs():
+    """
+    Clear the backend log file.
+    Returns:
+        str: A confirmation message or an error message.
+    """
+    try:
+        with open(BACKEND_LOG, "w") as file:
+            file.truncate(0)  # Clear the file content
+        return "Log file cleared successfully."
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error clearing log file: {str(e)}")
+
+
+@app.get("/construct", tags=['model'])
 def construct_model():
     """
     Construct a ml_model from scratch endpoint
@@ -83,8 +119,8 @@ def construct_model():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/generate-chart")
-def generate_chart():
+@app.get("/generate-chart", tags=['info'])
+async def generate_chart():
     """
     Generate a training and validation accuracy chart from saved log history.
     """
@@ -124,8 +160,8 @@ def generate_chart():
         raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}") from e
 
 
-@app.post("/attention-map")
-def attention_map_endpoint(text: str):
+@app.post("/attention-map", tags=['info'])
+async def get_attention_map(text: str):
     """
     Generate an attention map for the given text.
     """
@@ -146,8 +182,8 @@ def attention_map_endpoint(text: str):
         raise HTTPException(status_code=500, detail=f"Error during fine-tuning: {str(e)}") from e
 
 
-@app.post("/predict")
-async def predict_endpoint(request: Prediction):
+@app.post("/predict", tags=['model'], status_code=200)
+async def get_prediction(request: Prediction):
     """
         Predict the label for the given title and text using the trained ml_model.
         Args:
@@ -167,8 +203,8 @@ async def predict_endpoint(request: Prediction):
         return HTTPException(status_code=500, detail=f"Error during prediction: {str(e)}")
 
 
-@app.post("/fine-tune")
-def fine_tune_endpoint(request: Prediction):
+@app.post("/fine-tune", tags=['model'])
+async def fine_tune_model(request: Prediction):
     """
     Fine-tune the trained ml_model using the given title, text, and label.
 
@@ -196,4 +232,5 @@ def fine_tune_endpoint(request: Prediction):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=10000)
+    # uvicorn.run(app, host="0.0.0.0", port=10000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

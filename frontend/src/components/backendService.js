@@ -1,5 +1,5 @@
-const BASE_URL = 'https://suml-project.onrender.com'; // Base URL for the server
-// const BASE_URL = 'http://127.0.0.1:10000'; // Base URL for the local
+// const BASE_URL = 'https://suml-project.onrender.com'; // Base URL for the server
+const BASE_URL = 'http://127.0.0.1:8000'; // Base URL for the local
 
 export const backendService = {
     predict: async (title, text) => {
@@ -18,6 +18,7 @@ export const backendService = {
             // Resolve the response
             if (!response.ok) {
                 const errorData = await response.json();
+                console.log(errorData);
                 return {error: errorData.error || 'Unexpected format'};
             }
 
