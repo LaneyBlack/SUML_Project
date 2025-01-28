@@ -12,7 +12,6 @@ from transformers import (
     DistilBertTokenizer, DistilBertForSequenceClassification,
     Trainer, TrainingArguments
 )
-from ..models.prediction import Label
 
 
 MODEL_PATH = "ml_model/complete_model"
@@ -50,8 +49,8 @@ def predict_text(title: str, text: str):
     predicted_label = torch.argmax(logits, dim=1).item()
 
     # Match label with its name for displaying
-    label_mapping = {0: Label.REAL, 1: Label.FAKE}
-    label = label_mapping[predicted_label].name
+    label_mapping = {0: 'REAL', 1: 'FAKE'}
+    label = label_mapping[predicted_label]
     # Confidence score for the predicted label
     confidence = probabilities[predicted_label] * 100
 
@@ -170,16 +169,14 @@ class FineTuneDataset(torch.utils.data.Dataset):
         }
 
 
-def fine_tune_model(model_path: str, title: str, text: str, label: Label):
+def fine_tune_model(model_path: str, title: str, text: str, label: int):
     """
     Fine-tune the ml_model using the given text and label.
     Args:
         model_path (str): Path to the trained ml_model.
         title (str): The title of the text.
         text (str): The main content of the text.
-        label (Label): The label associated with the text ("REAL" or "FAKE").
-            value (int): The value of this Enum
-            name (string): String associated with this Enum state
+        label (int): The value of this Label Enum (0-Real, 1-FAKE).
     Returns:
         dict:
             A dictionary containing the fine-tuning message & loss values.
@@ -188,10 +185,9 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
 
         # Preparing the data
         input_text = f"[TITLE] {title} [TEXT] {text}"
-        label_id = label.value
 
         # Caclulate loss before training
-        loss_before = calculate_loss(input_text, label_id)
+        loss_before = calculate_loss(input_text, label)
 
         # Tokenizing data for train
         inputs = tokenizer(
@@ -204,7 +200,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
 
         # Creating PyTorch dataset
 
-        dataset = FineTuneDataset(inputs, [label_id])
+        dataset = FineTuneDataset(inputs, [label])
 
         training_args = TrainingArguments(
             output_dir="fine_tune_output",
@@ -223,7 +219,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
 
         trainer.train()
         # Calculate loss after training
-        loss_after = calculate_loss(input_text, label_id)
+        loss_after = calculate_loss(input_text, label)
 
         # Temp folder to save the ml_model
         temp_model_path = f"{model_path}_temp"

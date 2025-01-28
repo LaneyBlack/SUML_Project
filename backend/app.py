@@ -225,7 +225,8 @@ async def fine_tune_model(request: Prediction):
     if not os.path.exists(MODEL_DIR):
         raise HTTPException(status_code=404, detail="Trained ml_model not found.")
     try:
-        results = fine_tune_model(model_path=MODEL_DIR, title=request.title, text=request.text, label=request.label)
+        results = fine_tune_model(model_path=MODEL_DIR, title=request.title, text=request.text,
+                                  label=request.label.value)
         return {
             "message": results["message"],
             "loss_before": results.get("loss_before", "N/A"),
