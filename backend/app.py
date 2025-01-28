@@ -49,10 +49,16 @@ app.add_middleware(
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     """
-    This is a middleware to log all the backend method executions
-    @param request: the request object with request body
-    @param call_next: The method that should be called to get the response body
-    @return: response to the client
+    Middleware to log all incoming backend requests and their corresponding responses.
+    This middleware logs the HTTP method, URL, status code and the client IP address for every incoming request,
+    helping to track and monitor API activity for debugging and auditing purposes.
+    Parameters:
+        request (Request): The request object containing details such as headers, body, method, and client.
+        call_next (Callable): A callable function that is used to generate the response for the request.
+    Returns:
+        Response: The HTTP response returned to the client after processing the request.
+    Logs:
+        Logs an entry with the status code, method, URL, and client IP address for each request.
     """
     response = await call_next(request)
     logger.info(f"Incoming request: {response.status_code} {request.method} {request.url} from {request.client.host}")
@@ -192,7 +198,7 @@ async def get_prediction(request: Prediction):
                 text (str): The main content of the text.
         Returns:
             dict: A dictionary containing the prediction label and confidence score.
-        """
+    """
     try:
         prediction = predict_text(request.title, request.text)
         return {
@@ -232,5 +238,5 @@ async def fine_tune_model(request: Prediction):
 
 
 if __name__ == "__main__":
-    # uvicorn.run(app, host="0.0.0.0", port=10000)
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    # 0.0.0.0 and 10_000 to run in Cloud
+    uvicorn.run(app, host="0.0.0.0", port=10_000)
