@@ -1,12 +1,17 @@
 from backend.import_requirements import plt, sns, DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, \
     TrainingArguments, torch, os
 import shutil
+MODEL_PATH = "model/complete_model"
+import io
+tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
+model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
+
 
 
 def predict_text(title: str, text: str, model_path: str):
     # Load the model and tokenizer
-    tokenizer = DistilBertTokenizer.from_pretrained(model_path)
-    model = DistilBertForSequenceClassification.from_pretrained(model_path)
+    # tokenizer = DistilBertTokenizer.from_pretrained(model_path)
+    # model = DistilBertForSequenceClassification.from_pretrained(model_path)
     model.eval()
 
     # Combine title and text for input
@@ -40,11 +45,59 @@ def predict_text(title: str, text: str, model_path: str):
     }
 
 
-def generate_attention_map(model_path, text, output_path="charts/attention_map.png", max_tokens=10):
-    # Load the tokenizer and model
-    tokenizer = DistilBertTokenizer.from_pretrained(model_path)
-    model = DistilBertForSequenceClassification.from_pretrained(model_path)
-
+# def generate_attention_map(model_path, text, output_path="charts/attention_map.png", max_tokens=10):
+#     # Load the tokenizer and model
+#     # tokenizer = DistilBertTokenizer.from_pretrained(model_path)
+#     # model = DistilBertForSequenceClassification.from_pretrained(model_path)
+#
+#     # Tokenize the text
+#     inputs = tokenizer(
+#         text,
+#         return_tensors="pt",
+#         truncation=True,
+#         padding="max_length",
+#         max_length=128
+#     )
+#
+#     # Get attention weights from the model
+#     with torch.no_grad():
+#         outputs = model(**inputs, output_attentions=True)
+#         attentions = outputs.attentions  # List of attention weights
+#
+#     # Choose the attention weights from the last layer
+#     attention_weights = attentions[-1].squeeze(0).mean(0).numpy()
+#
+#     # Get the tokenized words
+#     tokens = tokenizer.convert_ids_to_tokens(inputs["input_ids"].squeeze(0).numpy())
+#
+#     # Limit the number of tokens and attention weights
+#     if len(tokens) > max_tokens:
+#         tokens = tokens[:max_tokens]
+#         attention_weights = attention_weights[:max_tokens, :max_tokens]
+#
+#     # Plot the attention map
+#     plt.figure(figsize=(12, 8))
+#     sns.heatmap(
+#         attention_weights,
+#         xticklabels=tokens,
+#         yticklabels=tokens,
+#         cmap="coolwarm",
+#         annot=False,
+#         cbar=True
+#     )
+#
+#     plt.xticks(rotation=45, ha="right", fontsize=10)
+#     plt.yticks(fontsize=10)
+#
+#     plt.title("Attention Map (Limited to Top {} Tokens)".format(max_tokens))
+#     plt.xlabel("Input Tokens")
+#     plt.ylabel("Input Tokens")
+#
+#     plt.tight_layout()
+#
+#     plt.savefig(output_path)
+#     plt.close()
+def generate_attention_map( text, output_path="charts/attention_map.png", max_tokens=10):
     # Tokenize the text
     inputs = tokenizer(
         text,
@@ -83,22 +136,28 @@ def generate_attention_map(model_path, text, output_path="charts/attention_map.p
 
     plt.xticks(rotation=45, ha="right", fontsize=10)
     plt.yticks(fontsize=10)
-
     plt.title("Attention Map (Limited to Top {} Tokens)".format(max_tokens))
     plt.xlabel("Input Tokens")
     plt.ylabel("Input Tokens")
-
     plt.tight_layout()
 
+    # Save to a file
     plt.savefig(output_path)
+
+    # Save to an in-memory bytes buffer
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format="png")
+    buffer.seek(0)
     plt.close()
+
+    return buffer
 
 
 def fine_tune_model(model_path: str, title: str, text: str, label: str):
     try:
         # Model and tokeniser setup
-        tokenizer = DistilBertTokenizer.from_pretrained(model_path)
-        model = DistilBertForSequenceClassification.from_pretrained(model_path)
+        # tokenizer = DistilBertTokenizer.from_pretrained(model_path)
+        # model = DistilBertForSequenceClassification.from_pretrained(model_path)
 
         # Preparing the data
         input_text = f"[TITLE] {title} [TEXT] {text}"
@@ -188,8 +247,10 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
             "loss_after": None
         }
 
-
 def plot_training_history(train_accuracies, val_accuracies, output_path="training_accuracy.png"):
+    """
+    Generate a training and validation accuracy chart and return it as an in-memory bytes buffer.
+    """
     try:
         epochs = range(1, len(train_accuracies) + 1)  # Epoch indices
         plt.figure(figsize=(10, 5))
@@ -201,10 +262,32 @@ def plot_training_history(train_accuracies, val_accuracies, output_path="trainin
         plt.legend(loc='upper left')
         plt.grid(True)
         plt.tight_layout()
-        # Save the plot
         plt.savefig(output_path)
+        # Save to an in-memory bytes buffer
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format="png")
+        buffer.seek(0)
         plt.close()
 
-        print(f"Training accuracy plot saved to {output_path}")
+        return buffer
     except Exception as e:
-        print(f"Failed to plot training history: {e}")
+        raise RuntimeError(f"Failed to plot training history: {e}")
+# def plot_training_history(train_accuracies, val_accuracies, output_path="training_accuracy.png"):
+#     try:
+#         epochs = range(1, len(train_accuracies) + 1)  # Epoch indices
+#         plt.figure(figsize=(10, 5))
+#         plt.plot(epochs, train_accuracies, 'r-', label='train')  # Red line for training accuracy
+#         plt.plot(epochs, val_accuracies, 'b-', label='val')  # Blue line for validation accuracy
+#         plt.title('Model Accuracy')
+#         plt.xlabel('Epochs')
+#         plt.ylabel('Accuracy')
+#         plt.legend(loc='upper left')
+#         plt.grid(True)
+#         plt.tight_layout()
+#         # Save the plot
+#         plt.savefig(output_path)
+#         plt.close()
+#
+#         print(f"Training accuracy plot saved to {output_path}")
+#     except Exception as e:
+#         print(f"Failed to plot training history: {e}")
