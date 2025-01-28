@@ -364,3 +364,56 @@
     flex-direction: column;
   }
 }
+
+@media (max-width: 768px) {
+  .home-main {
+    width: 100%;
+    padding: 0 1em;
+  }
+
+  .home-image {
+    width: 100%;
+    height: auto;
+    margin-top: 1em;
+  }
+
+  .main-title {
+    width: 100%;
+    font-size: 2em;
+  }
+
+  .home-input {
+    width: 100%;
+    padding: 1em;
+  }
+
+  .home-text-past{
+    width: 80%;
+  }
+
+  .textarea-name,
+  .textarea-body {
+    width: 100%;
+  }
+
+  .buttons-container {
+    flex-direction: column-reverse;
+    gap: 1em;
+    width: 70%;
+  }
+
+  .reset-button,
+  .predict-button {
+    width: 100%;
+    height: 3em;
+  }
+
+  .home-output-fake1,
+  .home-output-fact {
+    width: 100%;
+  }
+
+  .home-user-manual {
+    width: 100%;
+  }
+}
