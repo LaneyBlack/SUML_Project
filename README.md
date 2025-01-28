@@ -12,27 +12,27 @@ Fake News Detector jest praktycznym narzędziem zarówno dla zwykłych użytkown
 ## 🏗️ Struktura aplikacji  
 Aplikacja składa się z trzech głównych komponentów:  
 
-1. **Model**  
-   - Odpowiada za analizę i ocenę danych wprowadzonych przez użytkownika.  
+1. **Model** - odpowiada za analize danych wprowadzonych, tworzony jest za pomocą złożonego DistilBERT i natrenowany na własnych danych  
 
 2. **Backend**  
    - Zarządza przepływem danych między modelem a użytkownikiem.  
    - Umożliwia administratorom nadzorowanie oraz ulepszanie modelu.  
 
-3. **Frontend**  
-   - Dostarcza intuicyjny interfejs użytkownika, umożliwiając łatwe korzystanie z funkcji aplikacji.  
+3. **Frontend SPA** - Dostarcza intuicyjny interfejs użytkownika, umożliwiając łatwe korzystanie z funkcji aplikacji.  
 
-Dzięki takiej architekturze aplikacja jest modularna, co pozwala na łatwe rozdzielanie funkcjonalności między różne komponenty.
+![img.png](img.png)
+
+Dzięki takiej architekturze aplikacja jest modularna, co pozwala na łatwe rozdzielenie funkcjonalności między różnymi komponentami.
 
 ---
 
 ## ⚙️ Instrukcja uruchomienia  
 
 ### Wymagania:  
-- **React npm**: 10.9.1  
-- **Node.js**: 23.3.0  
-- **Python**: 3.9 lub wyższy  
-- **Git**
+- **React npm** 10.9.1  
+- **Node.js** 23.3.0  
+- **Python** 3.9 lub wyższy  
+- **Git** 2.0 lub wyższy
 
 ### Kroki Pobierania:
 
@@ -54,15 +54,29 @@ Dzięki takiej architekturze aplikacja jest modularna, co pozwala na łatwe rozd
 
 4. Uruchom backend aplikacji:  
    `python3 app.py`  
-   Aplikacja uruchomi się na lokalnym serwerze pod adresem: `http://localhost:8000/swagger` (z użyciem FastAPI).
+   Aplikacja uruchomi się na lokalnym serwerze pod adresem: `http://localhost:5000/swagger` (z użyciem FastAPI).
 
 ### Kroki Frontend:
 
 1. Przejdź do folderu frontendu:  
    `cd frontend`
 
-2. Zainstaluj wymagane biblioteki:  
-   `npm install`
+2. Instalacja Node.js
+
+   Linux:
+   
+   `sudo apt-get install -y nodejs`
+   
+   `sudo npm install -g npm`
+
+   Windows:
+   
+   Pobrać Node.js LTS (Long-Term Support) z podanej strony internetowej 
+   
+   https://nodejs.org/en
+
+   Run the `.msi` file.
+
 
 3. Aby stworzyć wersję produkcyjną aplikacji React:  
    `npm run build`  
@@ -113,14 +127,18 @@ Jeśli istnieje potrzeba wytrenowania modelu od nowa, administrator może to zro
 
 #### Swagger - backend endpoints:
 
-- **/fine-tune** 
-- **/predict** 
-- **/generate-chart** 
-- **/attention-map** 
-- **/logs**
+- `GET` `/generate-chart` - umożliwia generację chartu
+- `GET` `/logs` - umożliwia przejrzenie zdarzeń na Backendzie
+- `GET` `/docs` - umożliwia dostęp do Swagger 
+- `GET` `/openapi.json` - umożliwia dostęp do dokumentacji endpointów
+- `GET` `/redoc` - umożliwia dostęp do API docs by Redocly
+- `POST` `/fine-tune` - umożliwia dalsze trenowanie 
+- `POST` `/predict` - umożliwia predykcje podanego zestawu testów 
+- `POST` `/attention-map` - umożliwia wygenerowanie attention map dla podanego zestawu tekstu
 
-Logi serwera można przeglądać w pliku **backend.log**, dostępnym pod adresem: `http://localhost:8080/log`. Plik zawiera informacje o wykonanych akcjach w formacie:  
-`data | treść | akcja`
+
+Logi serwera można przeglądać w pliku **backend.log**, dostępnym pod adresem: `http://localhost:5000/logs`. Plik zawiera informacje o wykonanych akcjach w formacie:  
+`data - treść - akcja`
 
 Do analizy każdego treningu modelu używany jest plik **model_log.json**, który zawiera dane takie jak: loss, grad_norm, learning_rate, epoch, i step.
 

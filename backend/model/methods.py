@@ -1,6 +1,9 @@
-from backend.import_requirements import plt, sns, DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, \
-    TrainingArguments, torch, os
+import os
 import shutil
+import seaborn
+import torch
+import matplotlib.pyplot as plt
+from transformers import DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, TrainingArguments
 
 
 def predict_text(title: str, text: str, model_path: str):
@@ -72,7 +75,7 @@ def generate_attention_map(model_path, text, output_path="charts/attention_map.p
 
     # Plot the attention map
     plt.figure(figsize=(12, 8))
-    sns.heatmap(
+    seaborn.heatmap(
         attention_weights,
         xticklabels=tokens,
         yticklabels=tokens,

@@ -47,10 +47,10 @@ const Home = (props) => {
                 setError(`* Error: ${response.error}`);
             } else {
                 setResult({
-                message: response.message, // Displaying the success message
-                prediction: response.prediction.label, // "REAL" or "FAKE"
-                precision: response.prediction.confidence * 100, // Confidence as a percentage
-            });
+                    message: response.message, // Displaying the success message
+                    prediction: response.prediction.label, // "REAL" or "FAKE"
+                    precision: response.prediction.confidence * 100, // Confidence as a percentage
+                });
             }
         } catch (err) {
             setError("* An unexpected error occurred. Please try again.");
@@ -100,11 +100,11 @@ const Home = (props) => {
                         type="button"
                         className="reset-button button"
                         onClick={() => {
-                                setTitle("");
-                                setBody("");
-                                setError("");
-                                setResult(null);
-                            }}>
+                            setTitle("");
+                            setBody("");
+                            setError("");
+                            setResult(null);
+                        }}>
                         Reset
                     </button>
                     <button
@@ -112,7 +112,7 @@ const Home = (props) => {
                         className="predict-button button"
                         onClick={handlePredict}
                         disabled={loading}
-                        >
+                    >
                         Predict
                     </button>
                 </div>
@@ -120,41 +120,41 @@ const Home = (props) => {
 
             {/*---Loading animation---*/}
             {loading && (
-            <svg width="24" height="24" viewBox="0 0 24 24" className="home-icon1">
-                <circle r="0" cx="18" cy="12" fill="currentColor">
-                    <animate
-                        dur="1.5s"
-                        begin=".67"
-                        values="0;2;0;0"
-                        calcMode="spline"
-                        keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
-                        repeatCount="indefinite"
-                        attributeName="r">
-                    </animate>
-                </circle>
-                <circle r="0" cx="12" cy="12" fill="currentColor">
-                    <animate
-                        dur="1.5s"
-                        begin=".33"
-                        values="0;2;0;0"
-                        calcMode="spline"
-                        keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
-                        repeatCount="indefinite"
-                        attributeName="r">
-                    </animate>
-                </circle>
-                <circle r="0" cx="6" cy="12" fill="currentColor">
-                    <animate
-                        dur="1.5s"
-                        begin="0"
-                        values="0;2;0;0"
-                        calcMode="spline"
-                        keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
-                        repeatCount="indefinite"
-                        attributeName="r"
-                    ></animate>
-                </circle>
-            </svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" className="home-icon1">
+                    <circle r="0" cx="18" cy="12" fill="currentColor">
+                        <animate
+                            dur="1.5s"
+                            begin=".67"
+                            values="0;2;0;0"
+                            calcMode="spline"
+                            keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                            repeatCount="indefinite"
+                            attributeName="r">
+                        </animate>
+                    </circle>
+                    <circle r="0" cx="12" cy="12" fill="currentColor">
+                        <animate
+                            dur="1.5s"
+                            begin=".33"
+                            values="0;2;0;0"
+                            calcMode="spline"
+                            keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                            repeatCount="indefinite"
+                            attributeName="r">
+                        </animate>
+                    </circle>
+                    <circle r="0" cx="6" cy="12" fill="currentColor">
+                        <animate
+                            dur="1.5s"
+                            begin="0"
+                            values="0;2;0;0"
+                            calcMode="spline"
+                            keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8"
+                            repeatCount="indefinite"
+                            attributeName="r"
+                        ></animate>
+                    </circle>
+                </svg>
             )}
 
             {/*---Output---*/}
@@ -213,7 +213,7 @@ const Home = (props) => {
                         to-do list!” moments.
                     </span>
                     <span className="instruction-text">
-                      <span>
+                        <span>
                         B) Train (Teach the AI): Click the Train button. A new popup
                         will appear asking for your input:Is the text you entered Fact
                         or Fake? Select one. The AI will process your choice and either
@@ -222,44 +222,40 @@ const Home = (props) => {
                         to outsmart it by labeling pizza recipes as fake news).
                         Congratulations! You’ve just helped train the AI to be smarter.
                         Gold star for you!
-                      </span>
-              <br></br>
-            </span>
+                        </span>
+                        <br></br>
+                    </span>
                     <span className="instruction-text">
-                C) Predict (Time for Judgment): Click the Predict button. The AI
-                will evaluate your text like a judge on a talent show. It will
-                tell you whether the text is likely true or fake. You’ll also
-                get a confidence percentage because even robots like to show
-                their work. Example: “This text is 92% likely to be fake, and 8%
-                likely to be true. Sorry, not sorry.”
-            </span>
+                        C) Predict (Time for Judgment): Click the Predict button. The AI
+                        will evaluate your text like a judge on a talent show. It will
+                        tell you whether the text is likely true or fake. You’ll also
+                        get a confidence percentage because even robots like to show
+                        their work. Example: “This text is 92% likely to be fake, and 8%
+                        likely to be true. Sorry, not sorry.”
+                    </span>
                     <span className="text-intro">
-              <span>
-
-              </span>
-              <span>
-                {' '}
-                  Congratulations! You now know how to use the Fake News Detection tool like a pro.
-                Whether you’re fighting misinformation, training a
-                hyper-intelligent robot, or just here for the laughs, we hope
-                you enjoy the ride.
-              </span>
-              <br></br>
-              <br></br>
-              <span>
-                Remember: Fake news is like bad karaoke—funny at first, but
-                harmful if taken seriously.
-              </span>
-              <br></br>
-              <br></br>
-              <span>Now, go forth and detect!</span>
-            </span>
+                        <span>
+                            Congratulations! You now know how to use the Fake News Detection tool like a pro.
+                        Whether you’re fighting misinformation, training a
+                        hyper-intelligent robot, or just here for the laughs, we hope
+                        you enjoy the ride.
+                        </span>
+                        <br></br>
+                        <br></br>
+                        <span>
+                            Remember: Fake news is like bad karaoke—funny at first, but
+                            harmful if taken seriously.
+                        </span>
+                        <br></br>
+                        <br></br>
+                        <span>Now, go forth and detect!</span>
+                    </span>
                 </div>
             </div>
             <span>
-          <span>Made by Chrzczone Chrząszcze Team </span>
-          <span>❤️</span>
-        </span>
+                <span className="made-by">Made by Chrzczone Chrząszcze Team </span>
+                <span>❤️</span>
+            </span>
         </div>
     </div>)
 }
