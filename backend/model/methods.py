@@ -159,12 +159,12 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
         # Creating PyTorch dataset
         class FineTuneDataset(torch.utils.data.Dataset):
             """
-                       Custom dataset class for fine-tuning.
+            Custom dataset class for fine-tuning.
 
-                       Attributes:
-                           inputs (dict): Tokenized input data.
-                           labels (list): List of labels for the data.
-                       """
+            Attributes:
+                inputs (dict): Tokenized input data.
+                labels (list): List of labels for the data.
+            """
 
             def __init__(self, inputs, labels):
                 self.inputs = inputs
