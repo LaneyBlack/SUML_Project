@@ -254,7 +254,6 @@ const Home = (props) => {
             </div>
             <span>
                 <span className="made-by">Made by Chrzczone Chrząszcze Team </span>
-                <span>❤️</span>
             </span>
         </div>
     </div>)
