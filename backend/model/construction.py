@@ -1,11 +1,17 @@
+"""
+This module provides model construction with:
+functionality for organizing data, training a DistilBERT-based model,
+and evaluating its performance for fake news classification.
+"""
 import json
 
-from backend.import_requirements import pd, train_test_split, DistilBertTokenizer, \
-    DistilBertForSequenceClassification, Trainer, TrainingArguments, torch, accuracy_score, Dataset
-from backend.import_requirements import os
+from backend.import_requirements import (
+    pd, train_test_split, DistilBertTokenizer,
+    DistilBertForSequenceClassification, Trainer,
+    TrainingArguments, torch, accuracy_score, Dataset, os)
 
-from transformers import TrainerCallback
-from sklearn.metrics import accuracy_score
+from transformers import TrainerCallback, DistilBertConfig
+
 
 # Paths
 DATA_DIR = "../data/dataset.csv"
@@ -104,7 +110,6 @@ def compute_metrics(eval_pred):
     acc = accuracy_score(labels, predictions)
     return {"accuracy": acc}
 
-from transformers import DistilBertConfig
 
 # Create a custom config with dropout
 config = DistilBertConfig.from_pretrained(
@@ -113,6 +118,13 @@ config = DistilBertConfig.from_pretrained(
     dropout=0.3,  # This will apply dropout correctly
     attention_dropout=0.3  # Optional: Increases dropout on attention layers
 )
+def prepare_datasets(data, tokenizer, max_length):
+    x = data["combined_text"]
+    y = data["fake"]
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+    train_dataset = FakeNewsDataset(X_train.tolist(), y_train.tolist(), tokenizer, max_length=max_length)
+    test_dataset = FakeNewsDataset(X_test.tolist(), y_test.tolist(), tokenizer, max_length=max_length)
+    return train_dataset, test_dataset
 
 def train_model(data):
     """
@@ -128,9 +140,9 @@ def train_model(data):
         Exception: If training fails.
     """
     try:
-        x = data["combined_text"]
-        y = data["fake"]
-        X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+        # x = data["combined_text"]
+        # y = data["fake"]
+        # x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
         tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
         model = DistilBertForSequenceClassification.from_pretrained(
@@ -139,8 +151,11 @@ def train_model(data):
         )
 
         # Manually set the dropout value
-        train_dataset = FakeNewsDataset(X_train.tolist(), y_train.tolist(), tokenizer, max_length=128)
-        test_dataset = FakeNewsDataset(X_test.tolist(), y_test.tolist(), tokenizer, max_length=128)
+        # train_dataset = (
+        #     FakeNewsDataset(x_train.tolist(), y_train.tolist(), tokenizer, max_length=128))
+        # test_dataset = (
+        #     FakeNewsDataset(x_test.tolist(), y_test.tolist(), tokenizer, max_length=128))
+        train_dataset, test_dataset = prepare_datasets(data, tokenizer, max_length=128)
 
         training_args = TrainingArguments(
             output_dir="output",
@@ -227,7 +242,7 @@ def construct():
             Exception: If the dataset path is invalid or training fails.
     """
     if not os.path.exists(DATA_DIR):
-        raise Exception(f"Data directory does not exist: {DATA_DIR}")
+        raise FileNotFoundError(f"Data directory does not exist: {DATA_DIR}")
 
     try:
         data = organize_data(DATA_DIR)
