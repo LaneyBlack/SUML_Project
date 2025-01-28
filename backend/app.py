@@ -11,7 +11,7 @@ from enum import Enum
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
-from starlette.responses import PlainTextResponse
+from starlette.responses import PlainTextResponse, StreamingResponse
 
 from model.methods import (
     generate_attention_map, predict_text, fine_tune_model, plot_training_history
@@ -19,8 +19,7 @@ from model.methods import (
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
-COMPLETE_MODEL_DIR = "models/complete_model"
-MODEL_PATH = "models/complete_model"
+COMPLETE_MODEL_DIR = "model/complete_model"
 CHARTS_DIR = "charts"  # Directory where charts will be saved
 MODEL_LOG_DIR = "log/model_log.json"
 BACKEND_LOG = "log/backend.log"
@@ -73,7 +72,6 @@ def get_logs():
         return "Log file not found."
 
 
-
 @app.get("/generate-chart")
 def generate_chart():
     """
@@ -103,7 +101,15 @@ def generate_chart():
         # Generate the plot
         plot_training_history(train_accuracies, val_accuracies, chart_path)
 
-        return {"message": "Chart generated successfully.", "chart_path": chart_path}
+        chart_path = f"{CHARTS_DIR}/training_accuracy_chart.png"
+        # Generate the chart as an in-memory bytes buffer
+        buffer = plot_training_history(train_accuracies, val_accuracies, output_path=chart_path)
+
+        # Stream the chart back to the client
+        return StreamingResponse(buffer,
+                                 media_type="image/png",
+                                 headers={"Content-Disposition": "inline; filename=training_accuracy_chart.png"}
+                                 )
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Error generating chart: {str(e)}"
@@ -120,7 +126,14 @@ def attention_map_endpoint(text: str):
     try:
         output_path = f"{CHARTS_DIR}/attention_map.png"
         generate_attention_map(text=text, output_path=output_path)
-        return {"message": "Attention map generated successfully.", "path": output_path}
+        buffer = generate_attention_map(text=text)
+
+        # Stream the image back to the client
+        return StreamingResponse(
+            buffer,
+            media_type="image/png",
+            headers={"Content-Disposition": "inline; filename=attention_map.png"}
+        )
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Error during fine-tuning: {str(e)}"

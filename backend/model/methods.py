@@ -17,12 +17,12 @@ from transformers import (
 
 MODEL_PATH = "model/complete_model"
 
-# tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
-# model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
-tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
-tokenizer.save_pretrained("model/complete_model")
-model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
-model.save_pretrained("model/complete_model")
+tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
+model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
+# tokenizer = DistilBertTokenizer.from_pretrained("complete_model")
+# tokenizer.save_pretrained("model/complete_model")
+# model = DistilBertForSequenceClassification.from_pretrained("complete_model")
+# model.save_pretrained("model/complete_model")
 
 def predict_text(title: str, text: str):
     """
@@ -242,7 +242,9 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
             shutil.rmtree(temp_model_path)  # Remove the temp folder if it exists
 
         # Saving pretrained temp model
-        save_model(temp_model_path)
+        model.save_pretrained(temp_model_path)
+        tokenizer.save_pretrained(temp_model_path)
+        # save_model(temp_model_path)
 
         # Move to original catalog
         if os.path.exists(model_path):
@@ -265,17 +267,16 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
     }
 
 
-def save_model(temp_model_path):
-    """
-    Save the model and tokenizer to the specified temporary path.
-    Args:
-        temp_model_path (str):
-            The temporary directory path where the model and tokenizer will be saved.
-    Returns:
-        None
-    """
-    model.save_pretrained(temp_model_path)
-    tokenizer.save_pretrained(temp_model_path)
+# def save_model(temp_model_path):
+#     """
+#     Save the model and tokenizer to the specified temporary path.
+#     Args:
+#         temp_model_path (str):
+#             The temporary directory path where the model and tokenizer will be saved.
+#     Returns:
+#         None
+#     """
+#
 
 
 def plot_training_history(train_accuracies, val_accuracies, output_path="training_accuracy.png"):
