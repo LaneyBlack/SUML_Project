@@ -7,6 +7,7 @@ from transformers import DistilBertTokenizer, DistilBertForSequenceClassificatio
 
 from transformers import TrainerCallback
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
 # Paths
 DATA_DIR = "../data/dataset.csv"
@@ -14,6 +15,7 @@ CHART_EPOCHS = "../charts/training_accuracy.png"
 COMPLETE_MODEL_DIR = "complete_model"
 os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"  # Wyłączenie ostrzeżeń o symlinkach
 MODEL_LOG = "../log/model_log.json"
+
 
 # Data Preparation
 def organize_data(model_data_path):
@@ -140,12 +142,13 @@ class TrainingAccuracyCallback(TrainerCallback):
 def construct():
     if not os.path.exists(DATA_DIR):
         raise Exception(f"Data directory does not exist: {DATA_DIR}")
-
     try:
+        print("---Organising the data---")
         data = organize_data(DATA_DIR)
+        print("---Training a model---")
         results = train_model(data)
-        print(f"Model trained and saved successfully."
-              f"Results: {results}")
+        print(f"---Model trained and saved successfully.---")
+        print(f"Results: {results}")
     except Exception as e:
         print(f"Training failed: {e}")
         raise
