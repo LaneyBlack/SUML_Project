@@ -1,16 +1,22 @@
-from backend.import_requirements import plt, sns, DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, \
-    TrainingArguments, torch, os
+"""
+This module contains utility functions and classes for text classification,
+fine-tuning a model, generating attention maps, and plotting training history.
+"""
+import os
+import io
 import shutil
+from backend.import_requirements import (
+    plt, sns, DistilBertTokenizer, DistilBertForSequenceClassification, Trainer,
+    TrainingArguments, torch
+)
 
 MODEL_PATH = "model/complete_model"
-import io
 
 tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
 model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
 
 
 def predict_text(title: str, text: str):
-    model.eval()
     """
     Predict the label for the given title and text using the trained model.
 
@@ -21,6 +27,7 @@ def predict_text(title: str, text: str):
     Returns:
         dict: A dictionary containing the predicted label and confidence score.
     """
+    model.eval()
     # Combine title and text for input
     input_text = f"[TITLE] {title} [TEXT] {text}"
 
@@ -39,8 +46,8 @@ def predict_text(title: str, text: str):
     # Predicted label
     predicted_label = torch.argmax(logits, dim=1).item()
 
-    # Define custom labels (adjust as per your model training)
-    id2label = {0: "REAL", 1: "FAKE"}  # Example mapping
+    # Define custom labels
+    id2label = {0: "REAL", 1: "FAKE"}
     label = id2label.get(predicted_label, f"{predicted_label}")
 
     # Confidence score for the predicted label
@@ -58,8 +65,11 @@ def generate_attention_map(text, output_path="charts/attention_map.png", max_tok
 
     Args:
         text (str): The input text for which the attention map will be generated.
-        output_path (str, optional): Path to save the generated attention map image. Defaults to "charts/attention_map.png".
-        max_tokens (int, optional): Maximum number of tokens to display in the attention map. Defaults to 10.
+        output_path (str, optional):
+            Path to save the generated attention map image.
+            Defaults to "charts/attention_map.png".
+        max_tokens (int, optional):
+            Maximum number of tokens to display in the attention map. Defaults to 10.
 
     Returns:
         io.BytesIO: A buffer containing the generated attention map image.
@@ -102,7 +112,7 @@ def generate_attention_map(text, output_path="charts/attention_map.png", max_tok
 
     plt.xticks(rotation=45, ha="right", fontsize=10)
     plt.yticks(fontsize=10)
-    plt.title("Attention Map (Limited to Top {} Tokens)".format(max_tokens))
+    plt.title(f"Attention Map (Limited to Top {max_tokens} Tokens)")
     plt.xlabel("Input Tokens")
     plt.ylabel("Input Tokens")
     plt.tight_layout()
@@ -119,6 +129,50 @@ def generate_attention_map(text, output_path="charts/attention_map.png", max_tok
     return buffer
 
 
+def calculate_loss(text, label):
+    """
+    Calculate the loss for a given text and label.
+
+    Args:
+        text (str): The input text for loss calculation.
+        label (int): The label associated with the text (e.g., 0 or 1).
+
+    Returns:
+        float: The calculated loss.
+    """
+    inputs = tokenizer(
+        text, return_tensors="pt",
+        truncation=True, padding="max_length",
+        max_length=128)
+    with torch.no_grad():
+        outputs = model(**inputs, labels=torch.tensor([label]))
+        return outputs.loss.item()
+
+
+class FineTuneDataset(torch.utils.data.Dataset):
+    """
+    Custom dataset class for fine-tuning.
+
+    Attributes:
+        inputs (dict): Tokenized input data.
+        labels (list): List of labels for the data.
+    """
+
+    def __init__(self, inputs, labels):
+        self.inputs = inputs
+        self.labels = labels
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        return {
+            "input_ids": self.inputs["input_ids"][idx],
+            "attention_mask": self.inputs["attention_mask"][idx],
+            "labels": torch.tensor(self.labels[idx], dtype=torch.long)
+        }
+
+
 def fine_tune_model(model_path: str, title: str, text: str, label: str):
     """
     Fine-tune the model using the given text and label.
@@ -130,7 +184,8 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
         label (str): The label associated with the text ("REAL" or "FAKE").
 
     Returns:
-        dict: A dictionary containing the fine-tuning message and loss values before and after fine-tuning.
+        dict:
+            A dictionary containing the fine-tuning message & loss values.
     """
     try:
 
@@ -138,14 +193,8 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
         input_text = f"[TITLE] {title} [TEXT] {text}"
         label_id = 0 if label == "REAL" else 1
 
-        def calculate_loss(model, tokenizer, text, label):
-            inputs = tokenizer(text, return_tensors="pt", truncation=True, padding="max_length", max_length=128)
-            with torch.no_grad():
-                outputs = model(**inputs, labels=torch.tensor([label]))
-                return outputs.loss.item()
-
         # Caclulate loss before training
-        loss_before = calculate_loss(model, tokenizer, input_text, label_id)
+        loss_before = calculate_loss(input_text, label_id)
 
         # Tokenizing data for train
         inputs = tokenizer(
@@ -157,28 +206,6 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
         )
 
         # Creating PyTorch dataset
-        class FineTuneDataset(torch.utils.data.Dataset):
-            """
-            Custom dataset class for fine-tuning.
-
-            Attributes:
-                inputs (dict): Tokenized input data.
-                labels (list): List of labels for the data.
-            """
-
-            def __init__(self, inputs, labels):
-                self.inputs = inputs
-                self.labels = labels
-
-            def __len__(self):
-                return len(self.labels)
-
-            def __getitem__(self, idx):
-                return {
-                    "input_ids": self.inputs["input_ids"][idx],
-                    "attention_mask": self.inputs["attention_mask"][idx],
-                    "labels": torch.tensor(self.labels[idx], dtype=torch.long)
-                }
 
         dataset = FineTuneDataset(inputs, [label_id])
 
@@ -199,7 +226,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
 
         trainer.train()
         # Calculate loss after training
-        loss_after = calculate_loss(model, tokenizer, input_text, label_id)
+        loss_after = calculate_loss(input_text, label_id)
 
         # Temp folder to save the model
         temp_model_path = f"{model_path}_temp"
@@ -207,8 +234,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
             shutil.rmtree(temp_model_path)  # Remove the temp folder if it exists
 
         # Saving pretrained temp model
-        model.save_pretrained(temp_model_path)
-        tokenizer.save_pretrained(temp_model_path)
+        save_model(temp_model_path)
 
         # Move to original catalog
         if os.path.exists(model_path):
@@ -221,14 +247,27 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
             "loss_after": loss_after
         }
 
-    except Exception as e:
+    except (OSError, RuntimeError) as e:
         print(f"Error during fine-tuning: {str(e)}")
-        return {
-            "message": "Fine-tuning failed.",
-            "error": str(e),
-            "loss_before": None,
-            "loss_after": None
-        }
+    return {
+        "message": "Fine-tuning failed.",
+        "error": str(e),
+        "loss_before": None,
+        "loss_after": None
+    }
+
+
+def save_model(temp_model_path):
+    """
+    Save the model and tokenizer to the specified temporary path.
+    Args:
+        temp_model_path (str):
+            The temporary directory path where the model and tokenizer will be saved.
+    Returns:
+        None
+    """
+    model.save_pretrained(temp_model_path)
+    tokenizer.save_pretrained(temp_model_path)
 
 
 def plot_training_history(train_accuracies, val_accuracies, output_path="training_accuracy.png"):
@@ -238,7 +277,8 @@ def plot_training_history(train_accuracies, val_accuracies, output_path="trainin
     Args:
         train_accuracies (list): List of training accuracies per epoch.
         val_accuracies (list): List of validation accuracies per epoch.
-        output_path (str, optional): Path to save the generated chart. Defaults to "training_accuracy.png".
+        output_path (str, optional):
+            Path to save the generated chart. Defaults to "training_accuracy.png".
 
     Returns:
         io.BytesIO: A buffer containing the generated chart image.
@@ -265,5 +305,5 @@ def plot_training_history(train_accuracies, val_accuracies, output_path="trainin
         plt.close()
 
         return buffer
-    except Exception as e:
-        raise RuntimeError(f"Failed to plot training history: {e}")
+    except RuntimeError as e:
+        raise RuntimeError(f"Failed to plot training history: {e}") from e

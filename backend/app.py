@@ -1,29 +1,83 @@
 import json
-
-from backend.import_requirements import os, FastAPI, HTTPException, uvicorn, Enum
-from backend.model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
-from fastapi.responses import StreamingResponse
-
-app = FastAPI()
+import logging
+import os
+import uvicorn
+from enum import Enum
+from fastapi import FastAPI, HTTPException
+from starlette.requests import Request
+from starlette.responses import FileResponse, PlainTextResponse
+# Relative imports
+from model.construction import (organize_data, train_model)
+from model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
-MODEL_PATH = "model/complete_model"
+COMPLETE_MODEL_DIR = "models/complete_model"
+MODEL_PATH = "models/complete_model"
 CHARTS_DIR = "charts"  # Directory where charts will be saved
 MODEL_LOG_DIR = "log/model_log.json"
+BACKEND_LOG = "log/backend.log"
+
+# Setup logger config
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(BACKEND_LOG),  # Log to file
+        logging.StreamHandler()  # Log to console
+    ]
+)
+# Create a logger instance
+logger = logging.getLogger(__name__)
+# Application definition
+app = FastAPI()
 
 
-@app.get("/generateChart")
-def generate_chart_endpoint():
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
     """
-    Generate a training and validation accuracy chart and return it as a downloadable file.
-
-    Returns:
-        StreamingResponse: A response containing the training accuracy chart in PNG format.
-
-    Raises:
-        HTTPException: If the log history file is not found or an error occurs during chart generation.
+    This is a middleware to log all the backend method executions
+    @param request: the request object with request body
+    @param call_next: The method that should be called to get the response body
+    @return: response to the client
     """
+    response = await call_next(request)
+    logger.info(f"Incoming request: {response.status_code} {request.method} {request.url} from {request.client.host}")
+    # logger.info(f"Response status: {response.status_code}")
+    return response
+
+
+@app.get("/logs", response_class=PlainTextResponse)
+def get_logs():
+    try:
+        # Read the log file content
+        with open(BACKEND_LOG, "r") as file:
+            logs = file.read()
+        return logs
+    except FileNotFoundError:
+        return "Log file not found."
+
+
+# @app.get("/train")
+# def train_model_endpoint():
+#     if not os.path.exists(DATA_DIR):
+#         raise HTTPException(status_code=404, detail="Dataset not found.")
+#     try:
+#         data = organize_data(DATA_DIR)
+#         results = train_model(data)
+#         return {"message": "Model trained and saved successfully.", "results": results}
+#     except Exception as e:
+#         print(f"Training failed: {e}")
+#         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/generate-chart")
+def generate_chart():
+    """
+    Generate a training and validation accuracy chart from saved log history.
+    """
+    chart_path = f"{CHARTS_DIR}/training_accuracy_chart.png"
+
     try:
         # Check if log history exists
         if not os.path.exists(MODEL_LOG_DIR):
@@ -41,14 +95,11 @@ def generate_chart_endpoint():
         min_length = min(len(train_accuracies), len(val_accuracies))
         train_accuracies = train_accuracies[:min_length]
         val_accuracies = val_accuracies[:min_length]
-        chart_path = f"{CHARTS_DIR}/training_accuracy_chart.png"
-        # Generate the chart as an in-memory bytes buffer
-        buffer = plot_training_history(train_accuracies, val_accuracies, output_path=chart_path)
 
-        # Stream the chart back to the client
-        return StreamingResponse(buffer, media_type="image/png",
-                                 headers={"Content-Disposition": "inline; filename=training_accuracy_chart.png"}
-                                 )
+        # Generate the plot
+        plot_training_history(train_accuracies, val_accuracies, chart_path)
+
+        return {"message": "Chart generated successfully.", "chart_path": chart_path}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}")
 
@@ -56,49 +107,22 @@ def generate_chart_endpoint():
 @app.post("/attention-map")
 def attention_map_endpoint(text: str):
     """
-    Generate an attention map for the given text and return it as a downloadable file.
-
-    Args:
-        text (str): The input text for which the attention map will be generated.
-
-    Returns:
-        StreamingResponse: A response containing the attention map in PNG format.
-
-    Raises:
-        HTTPException: If the trained model is not found or an error occurs during attention map generation.
+    Generate an attention map for the given text.
     """
-    if not os.path.exists(MODEL_PATH):
+    if not os.path.exists(COMPLETE_MODEL_DIR):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
-        buffer = generate_attention_map(text=text)
-
-        # Stream the image back to the client
-        return StreamingResponse(
-            buffer,
-            media_type="image/png",
-            headers={"Content-Disposition": "inline; filename=attention_map.png"}
-        )
+        output_path = f"{CHARTS_DIR}/attention_map.png"
+        generate_attention_map(model_path=COMPLETE_MODEL_DIR, text=text, output_path=output_path)
+        return {"message": "Attention map generated successfully.", "path": output_path}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating attention map: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/predict")
 async def predict_endpoint(title: str, text: str):
-    """
-    Predict the label of the given text using the trained model.
-
-    Args:
-        title (str): The title of the text.
-        text (str): The main content of the text.
-
-    Returns:
-        dict: A dictionary containing the prediction label and confidence score.
-
-    Raises:
-        HTTPException: If an error occurs during prediction.
-    """
     try:
-        prediction = predict_text(title, text)
+        prediction = predict_text(title, text, MODEL_PATH)
         return {
             "message": "Prediction successful.",
             "prediction": prediction
@@ -109,37 +133,16 @@ async def predict_endpoint(title: str, text: str):
 
 # Enum for label
 class Label(str, Enum):
-    """
-    Enumeration for the possible labels of the model.
-
-    Attributes:
-        REAL (str): Represents real content.
-        FAKE (str): Represents fake content.
-    """
     REAL = "REAL"
     FAKE = "FAKE"
 
 
 @app.post("/fine-tune")
 def fine_tune_endpoint(title: str, text: str, label: Label):
-    """
-    Fine-tune the model with the given text and label.
-
-    Args:
-        title (str): The title of the text.
-        text (str): The main content of the text.
-        label (Label): The label (REAL or FAKE) associated with the text.
-
-    Returns:
-        dict: A dictionary containing the fine-tuning message and loss values before and after fine-tuning.
-
-    Raises:
-        HTTPException: If the trained model is not found or an error occurs during fine-tuning.
-    """
-    if not os.path.exists(MODEL_PATH):
+    if not os.path.exists(COMPLETE_MODEL_DIR):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
-        results = fine_tune_model(model_path=MODEL_PATH, title=title, text=text, label=label.value)
+        results = fine_tune_model(model_path=COMPLETE_MODEL_DIR, title=title, text=text, label=label.value)
         return {
             "message": results["message"],
             "loss_before": results.get("loss_before", "N/A"),
@@ -150,4 +153,4 @@ def fine_tune_endpoint(title: str, text: str, label: Label):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=10000)

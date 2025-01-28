@@ -133,7 +133,6 @@ def train_model(data):
         X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
         tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
-        # model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
         model = DistilBertForSequenceClassification.from_pretrained(
             "distilbert-base-uncased",
             config=config  # Pass the modified config
