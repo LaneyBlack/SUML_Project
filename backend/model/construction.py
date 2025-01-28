@@ -28,10 +28,8 @@ MODEL_LOG = "../log/model_log.json"
 def organize_data(model_data_path):
     """
       Organize and preprocess the data for the model.
-
       Args:
           model_data_path (str): Path to the dataset CSV file.
-
       Returns:
           pandas.DataFrame: Preprocessed DataFrame with combined text and binary labels.
     """
@@ -45,7 +43,6 @@ def organize_data(model_data_path):
 class FakeNewsDataset(Dataset):
     """
        Custom PyTorch Dataset for handling fake news data.
-
        Args:
            texts (list): List of text samples.
            labels (list): List of corresponding labels.
@@ -62,7 +59,6 @@ class FakeNewsDataset(Dataset):
     def __len__(self):
         """
         Get the number of samples in the dataset.
-
         Returns:
             int: Number of samples.
         """
@@ -71,10 +67,8 @@ class FakeNewsDataset(Dataset):
     def __getitem__(self, idx):
         """
         Get a single sample by index.
-
         Args:
             idx (int): Index of the sample.
-
         Returns:
             dict: Dictionary containing input IDs, attention mask, and label.
         """
@@ -97,15 +91,13 @@ class FakeNewsDataset(Dataset):
 def compute_metrics(eval_pred):
     """
     Compute evaluation metrics for the model.
-
     Args:
         eval_pred (tuple): Tuple containing logits and labels.
-
     Returns:
         dict: Dictionary containing the accuracy score.
     """
     logits, labels = eval_pred
-    # Sprawdź typ logits i labels, aby uniknąć błędów
+    # Check logits and labels, to avoid errors
     if isinstance(logits, torch.Tensor):
         predictions = torch.argmax(logits, dim=1).cpu().numpy()
     else:
@@ -126,10 +118,8 @@ config = DistilBertConfig.from_pretrained(
 def prepare_datasets(data, tokenizer, max_length):
     """
     Prepare training and testing datasets from the provided data.
-
     This function splits the input data into training and testing sets, tokenizes the text data,
     and creates PyTorch datasets for use in model training and evaluation.
-
     Args:
         data (pandas.DataFrame): A DataFrame containing the combined text column ("combined_text")
             and binary labels column ("fake").
@@ -137,7 +127,6 @@ def prepare_datasets(data, tokenizer, max_length):
             A tokenizer instance (e.g., DistilBertTokenizer)
             for encoding text data.
         max_length (int): The maximum length for text sequences after tokenization.
-
     Returns:
         tuple: A tuple containing two datasets:
             - train_dataset (FakeNewsDataset): The training dataset.
@@ -156,13 +145,10 @@ def prepare_datasets(data, tokenizer, max_length):
 def train_model(data):
     """
     Train and evaluate a DistilBERT model on the provided data.
-
     Args:
         data (pandas.DataFrame): Preprocessed data containing combined text and binary labels.
-
     Returns:
         dict: Evaluation results containing metrics like accuracy.
-
     Raises:
         Exception: If training fails.
     """
@@ -197,13 +183,13 @@ def train_model(data):
         # Add the custom callback for training accuracy
         callback = TrainingAccuracyCallback(trainer, train_dataset)
         trainer.add_callback(callback)
-        # Trening modelu
+        # Training model
         trainer.train()
-        # Ewaluacja modelu
+        # Evaluate model
         results = trainer.evaluate()
         print("Accuracy:", results["eval_accuracy"])
 
-        # Zapis modelu
+        # Save the model
         model.save_pretrained(COMPLETE_MODEL_DIR)
         tokenizer.save_pretrained(COMPLETE_MODEL_DIR)
 
@@ -218,12 +204,10 @@ def train_model(data):
 class TrainingAccuracyCallback(TrainerCallback):
     """
     Custom callback to log training accuracy at the end of each epoch.
-
     Args:
         trainer (Trainer): Trainer instance for managing training.
         train_dataset (Dataset): Dataset used for training.
     """
-
     def __init__(self, trainer, train_dataset):
         self.trainer = trainer
         self.train_dataset = train_dataset
@@ -231,7 +215,6 @@ class TrainingAccuracyCallback(TrainerCallback):
     def on_epoch_end(self, args, state, control, **kwargs):
         """
         Compute and log training accuracy at the end of an epoch.
-
         Args:
             args: Training arguments.
             state: Training state.
@@ -255,7 +238,6 @@ class TrainingAccuracyCallback(TrainerCallback):
 def construct():
     """
         Main function to organize data and train the model.
-
         Raises:
             Exception: If the dataset path is invalid or training fails.
     """
