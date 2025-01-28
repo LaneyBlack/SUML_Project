@@ -1,16 +1,17 @@
 import json
 
 from backend.import_requirements import os, FastAPI, HTTPException, uvicorn, Enum
-# from backend.model.construction import (organize_data, train_model)
 from backend.model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 from fastapi.responses import StreamingResponse
+
 app = FastAPI()
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
 MODEL_PATH = "model/complete_model"
 CHARTS_DIR = "charts"  # Directory where charts will be saved
-MODEL_LOG_DIR= "log/model_log.json"
+MODEL_LOG_DIR = "log/model_log.json"
+
 
 @app.get("/generateChart")
 def generate_chart_endpoint():
@@ -39,12 +40,12 @@ def generate_chart_endpoint():
         buffer = plot_training_history(train_accuracies, val_accuracies, output_path=chart_path)
 
         # Stream the chart back to the client
-        return StreamingResponse(            buffer,
-            media_type="image/png",
-            headers={"Content-Disposition": "inline; filename=training_accuracy_chart.png"}
-        )
+        return StreamingResponse(buffer, media_type="image/png",
+                                 headers={"Content-Disposition": "inline; filename=training_accuracy_chart.png"}
+                                 )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}")
+
 
 @app.post("/attention-map")
 def attention_map_endpoint(text: str):
@@ -69,7 +70,7 @@ def attention_map_endpoint(text: str):
 @app.post("/predict")
 async def predict_endpoint(title: str, text: str):
     try:
-        prediction = predict_text(title, text, MODEL_PATH)
+        prediction = predict_text(title, text)
         return {
             "message": "Prediction successful.",
             "prediction": prediction

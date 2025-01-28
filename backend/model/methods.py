@@ -8,7 +8,7 @@ model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
 
 
 
-def predict_text(title: str, text: str, model_path: str):
+def predict_text(title: str, text: str):
     model.eval()
 
     # Combine title and text for input
