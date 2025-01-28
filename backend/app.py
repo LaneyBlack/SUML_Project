@@ -12,51 +12,6 @@ MODEL_PATH = "model/complete_model"
 CHARTS_DIR = "charts"  # Directory where charts will be saved
 MODEL_LOG_DIR= "log/model_log.json"
 
-
-# @app.get("/train")
-# def train_model_endpoint():
-#     if not os.path.exists(DATA_DIR):
-#         raise HTTPException(status_code=404, detail="Dataset not found.")
-#     try:
-#         data = organize_data(DATA_DIR)
-#         results = train_model(data)
-#         return {"message": "Model trained and saved successfully.", "results": results}
-#     except Exception as e:
-#         print(f"Training failed: {e}")
-#         raise HTTPException(status_code=500, detail=str(e))
-
-
-# @app.get("/generateChart")
-# def generate_chart():
-#     """
-#     Generate a training and validation accuracy chart from saved log history.
-#     """
-#     chart_path = f"{CHARTS_DIR}/training_accuracy_chart.png"
-#
-#     try:
-#         # Check if log history exists
-#         if not os.path.exists(MODEL_LOG_DIR):
-#             raise HTTPException(status_code=404, detail="Log history file not found. Train the model first.")
-#
-#         # Load the log history
-#         with open(MODEL_LOG_DIR, "r") as f:
-#             log_history = json.load(f)
-#
-#         # Extract training and validation accuracies
-#         train_accuracies = [log["accuracy"] for log in log_history if "accuracy" in log]
-#         val_accuracies = [log["eval_accuracy"] for log in log_history if "eval_accuracy" in log]
-#
-#         # Ensure both lists have the same length
-#         min_length = min(len(train_accuracies), len(val_accuracies))
-#         train_accuracies = train_accuracies[:min_length]
-#         val_accuracies = val_accuracies[:min_length]
-#
-#         # Generate the plot
-#         plot_training_history(train_accuracies, val_accuracies, chart_path)
-#
-#         return {"message": "Chart generated successfully.", "chart_path": chart_path}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}")
 @app.get("/generateChart")
 def generate_chart_endpoint():
     """
@@ -109,21 +64,6 @@ def attention_map_endpoint(text: str):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating attention map: {str(e)}")
-
-
-# @app.post("/attention-map")
-# def attention_map_endpoint(text: str):
-#     """
-#     Generate an attention map for the given text.
-#     """
-#     if not os.path.exists(MODEL_PATH):
-#         raise HTTPException(status_code=404, detail="Trained model not found.")
-#     try:
-#         output_path = f"{CHARTS_DIR}/attention_map.png"
-#         generate_attention_map(model_path=MODEL_PATH, text=text, output_path=output_path)
-#         return {"message": "Attention map generated successfully.", "path": output_path}
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/predict")
