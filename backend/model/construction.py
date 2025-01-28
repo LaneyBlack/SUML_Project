@@ -104,6 +104,15 @@ def compute_metrics(eval_pred):
     acc = accuracy_score(labels, predictions)
     return {"accuracy": acc}
 
+from transformers import DistilBertConfig
+
+# Create a custom config with dropout
+config = DistilBertConfig.from_pretrained(
+    "distilbert-base-uncased",
+    num_labels=2,
+    dropout=0.3,  # This will apply dropout correctly
+    attention_dropout=0.3  # Optional: Increases dropout on attention layers
+)
 
 def train_model(data):
     """
@@ -124,8 +133,13 @@ def train_model(data):
         X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
         tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
-        model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
+        # model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
+        model = DistilBertForSequenceClassification.from_pretrained(
+            "distilbert-base-uncased",
+            config=config  # Pass the modified config
+        )
 
+        # Manually set the dropout value
         train_dataset = FakeNewsDataset(X_train.tolist(), y_train.tolist(), tokenizer, max_length=128)
         test_dataset = FakeNewsDataset(X_test.tolist(), y_test.tolist(), tokenizer, max_length=128)
 
@@ -168,7 +182,6 @@ def train_model(data):
     except Exception as e:
         print(f"Training failed: {e}")
         raise
-
 
 class TrainingAccuracyCallback(TrainerCallback):
     """
