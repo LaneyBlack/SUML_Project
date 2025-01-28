@@ -1,15 +1,21 @@
-
+"""
+This module provides a FastAPI-based backend for model operations,
+including generating attention maps, predictions, training charts, and fine-tuning.
+"""
 
 import json
 import logging
 import os
-import uvicorn
 from enum import Enum
+
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
 from starlette.responses import PlainTextResponse
+
 from model.methods import (
-    generate_attention_map, predict_text, fine_tune_model, plot_training_history)
+    generate_attention_map, predict_text, fine_tune_model, plot_training_history
+)
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
@@ -43,14 +49,21 @@ async def log_requests(request: Request, call_next):
     @return: response to the client
     """
     response = await call_next(request)
-    logger.info(f"Incoming request:"
-                f"{response.status_code} {request.method} {request.url} from {request.client.host}")
+    logger.info("Incoming request: %s %s %s from %s",
+                response.status_code, request.method, request.url, request.client.host)
+
     # logger.info(f"Response status: {response.status_code}")
     return response
 
 
 @app.get("/logs", response_class=PlainTextResponse)
 def get_logs():
+    """
+       Retrieve the backend logs.
+
+       Returns:
+           str: The content of the log file.
+       """
     try:
         # Read the log file content
         with open(BACKEND_LOG, "r") as file:
@@ -59,18 +72,6 @@ def get_logs():
     except FileNotFoundError:
         return "Log file not found."
 
-
-# @app.get("/train")
-# def train_model_endpoint():
-#     if not os.path.exists(DATA_DIR):
-#         raise HTTPException(status_code=404, detail="Dataset not found.")
-#     try:
-#         data = organize_data(DATA_DIR)
-#         results = train_model(data)
-#         return {"message": "Model trained and saved successfully.", "results": results}
-#     except Exception as e:
-#         print(f"Training failed: {e}")
-#         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/generate-chart")
@@ -104,7 +105,9 @@ def generate_chart():
 
         return {"message": "Chart generated successfully.", "chart_path": chart_path}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error generating chart: {str(e)}"
+        ) from e
 
 
 @app.post("/attention-map")
@@ -116,32 +119,58 @@ def attention_map_endpoint(text: str):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
         output_path = f"{CHARTS_DIR}/attention_map.png"
-        generate_attention_map(model_path=COMPLETE_MODEL_DIR, text=text, output_path=output_path)
+        generate_attention_map(text=text, output_path=output_path)
         return {"message": "Attention map generated successfully.", "path": output_path}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500, detail=f"Error during fine-tuning: {str(e)}"
+        ) from e
 
 
 @app.post("/predict")
 async def predict_endpoint(title: str, text: str):
+    """
+    Predict the label for the given title and text using the trained model.
+
+    Args:
+        title (str): The title of the text.
+        text (str): The main content of the text.
+
+    Returns:
+        dict: A dictionary containing the prediction label and confidence score.
+    """
     try:
-        prediction = predict_text(title, text, MODEL_PATH)
+        prediction = predict_text(title, text)
         return {
             "message": "Prediction successful.",
             "prediction": prediction
         }
-    except Exception as e:
+    except (FileNotFoundError, RuntimeError) as e:
         return HTTPException(status_code=500, detail=f"Error during prediction: {str(e)}")
 
 
 # Enum for label
 class Label(str, Enum):
+    """
+    Enum representing possible labels for fine-tuning the model.
+    """
     REAL = "REAL"
     FAKE = "FAKE"
 
 
 @app.post("/fine-tune")
 def fine_tune_endpoint(title: str, text: str, label: Label):
+    """
+    Fine-tune the trained model using the given title, text, and label.
+
+    Args:
+        title (str): The title of the text.
+        text (str): The main content of the text.
+        label (Label): The label for fine-tuning (REAL or FAKE).
+
+    Returns:
+        dict: A dictionary containing the fine-tuning results, including the loss before and after.
+    """
     if not os.path.exists(COMPLETE_MODEL_DIR):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
@@ -153,8 +182,11 @@ def fine_tune_endpoint(title: str, text: str, label: Label):
             "loss_after": results.get("loss_after", "N/A")
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error during fine-tuning: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error during fine-tuning: {str(e)}"
+        ) from e
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=10000)
+    # uvicorn.run(app, host="0.0.0.0", port=10000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

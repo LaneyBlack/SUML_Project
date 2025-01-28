@@ -17,9 +17,12 @@ from transformers import (
 
 MODEL_PATH = "model/complete_model"
 
-tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
-model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
-
+# tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
+# model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
+tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
+tokenizer.save_pretrained("model/complete_model")
+model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
+model.save_pretrained("model/complete_model")
 
 def predict_text(title: str, text: str):
     """
