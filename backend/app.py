@@ -13,15 +13,15 @@ from starlette.requests import Request
 from starlette.responses import PlainTextResponse, StreamingResponse
 
 # Relative imports
-from requests.requests import Prediction
-from model.construction import (organize_data, train_model)
+from models.prediction import Prediction
+from model.construction import (construct)
 from model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
-COMPLETE_MODEL_DIR = "model/complete_model"
+MODEL_DIR = "model/complete_model"
 CHARTS_DIR = "charts"  # Directory where charts will be saved
-MODEL_LOG_DIR = "log/model_log.json"
+MODEL_LOG = "log/model_log.json"
 BACKEND_LOG = "log/backend.log"
 
 # Setup logger config
@@ -49,7 +49,6 @@ async def log_requests(request: Request, call_next):
     """
     response = await call_next(request)
     logger.info(f"Incoming request: {response.status_code} {request.method} {request.url} from {request.client.host}")
-    # logger.info(f"Response status: {response.status_code}")
     return response
 
 
@@ -69,17 +68,16 @@ def get_logs():
         return "Log file not found."
 
 
-# @app.get("/train")
-# def train_model_endpoint():
-#     if not os.path.exists(DATA_DIR):
-#         raise HTTPException(status_code=404, detail="Dataset not found.")
-#     try:
-#         data = organize_data(DATA_DIR)
-#         results = train_model(data)
-#         return {"message": "Model trained and saved successfully.", "results": results}
-#     except Exception as e:
-#         print(f"Training failed: {e}")
-#         raise HTTPException(status_code=500, detail=str(e))
+@app.get("/train")
+def train_model_endpoint():
+    if not os.path.exists(DATA_DIR):
+        raise HTTPException(status_code=404, detail="Dataset not found.")
+    try:
+        results = construct()
+        return {"message": "Model trained and saved successfully.", "results": results}
+    except Exception as e:
+        print(f"Training failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/generate-chart")
@@ -91,11 +89,11 @@ def generate_chart():
 
     try:
         # Check if log history exists
-        if not os.path.exists(MODEL_LOG_DIR):
+        if not os.path.exists(MODEL_LOG):
             raise HTTPException(status_code=404, detail="Log history file not found. Train the model first.")
 
         # Load the log history
-        with open(MODEL_LOG_DIR, "r") as f:
+        with open(MODEL_LOG, "r") as f:
             log_history = json.load(f)
 
         # Extract training and validation accuracies
@@ -128,7 +126,7 @@ def attention_map_endpoint(text: str):
     """
     Generate an attention map for the given text.
     """
-    if not os.path.exists(COMPLETE_MODEL_DIR):
+    if not os.path.exists(MODEL_DIR):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
         output_path = f"{CHARTS_DIR}/attention_map.png"
@@ -149,16 +147,15 @@ def attention_map_endpoint(text: str):
 async def predict_endpoint(request: Prediction):
     """
         Predict the label for the given title and text using the trained model.
-
         Args:
-            title (str): The title of the text.
-            text (str): The main content of the text.
-
+            request(Prediction): Custom class for representing prediction
+                title (str): The title of the text.
+                text (str): The main content of the text.
         Returns:
             dict: A dictionary containing the prediction label and confidence score.
         """
     try:
-        prediction = predict_text(request.title, request.text, MODEL_PATH)
+        prediction = predict_text(request.title, request.text)
         return {
             "message": "Prediction successful.",
             "prediction": prediction
@@ -180,10 +177,10 @@ def fine_tune_endpoint(request: Prediction):
     Returns:
         dict: A dictionary containing the fine-tuning results, including the loss before and after.
     """
-    if not os.path.exists(COMPLETE_MODEL_DIR):
+    if not os.path.exists(MODEL_DIR):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
-        results = fine_tune_model(model_path=COMPLETE_MODEL_DIR,  title=request.title, text=request.text, label=request.label)
+        results = fine_tune_model(model_path=MODEL_DIR, title=request.title, text=request.text, label=request.label)
         return {
             "message": results["message"],
             "loss_before": results.get("loss_before", "N/A"),

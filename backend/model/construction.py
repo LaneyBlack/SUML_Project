@@ -251,6 +251,7 @@ def construct():
         results = train_model(data)
         print(f"---Model trained and saved successfully.---")
         print(f"Results: {results}")
+        return results
     except Exception as e:
         print(f"Training failed: {e}")
         raise
