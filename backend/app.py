@@ -6,7 +6,9 @@ from enum import Enum
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
 from starlette.responses import FileResponse, PlainTextResponse
+
 # Relative imports
+from requests.requests import Prediction
 from model.construction import (organize_data, train_model)
 from model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 
@@ -120,9 +122,9 @@ def attention_map_endpoint(text: str):
 
 
 @app.post("/predict")
-async def predict_endpoint(title: str, text: str):
+async def predict_endpoint(request: Prediction):
     try:
-        prediction = predict_text(title, text, MODEL_PATH)
+        prediction = predict_text(request.title, request.text, MODEL_PATH)
         return {
             "message": "Prediction successful.",
             "prediction": prediction
@@ -131,18 +133,12 @@ async def predict_endpoint(title: str, text: str):
         return HTTPException(status_code=500, detail=f"Error during prediction: {str(e)}")
 
 
-# Enum for label
-class Label(str, Enum):
-    REAL = "REAL"
-    FAKE = "FAKE"
-
-
 @app.post("/fine-tune")
-def fine_tune_endpoint(title: str, text: str, label: Label):
+def fine_tune_endpoint(request: Prediction):
     if not os.path.exists(COMPLETE_MODEL_DIR):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
-        results = fine_tune_model(model_path=COMPLETE_MODEL_DIR, title=title, text=text, label=label.value)
+        results = fine_tune_model(model_path=COMPLETE_MODEL_DIR, title=request.title, text=request.text, label=request.label)
         return {
             "message": results["message"],
             "loss_before": results.get("loss_before", "N/A"),

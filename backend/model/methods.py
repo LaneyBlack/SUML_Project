@@ -5,6 +5,8 @@ import torch
 import matplotlib.pyplot as plt
 from transformers import DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, TrainingArguments
 
+from backend.requests.requests import Label
+
 
 def predict_text(title: str, text: str, model_path: str):
     # Load the model and tokenizer
@@ -31,8 +33,7 @@ def predict_text(title: str, text: str, model_path: str):
     predicted_label = torch.argmax(logits, dim=1).item()
 
     # Define custom labels (adjust as per your model training)
-    id2label = {0: "REAL", 1: "FAKE"}  # Example mapping
-    label = id2label.get(predicted_label, f"{predicted_label}")
+    label = Label(predicted_label).name
 
     # Confidence score for the predicted label
     confidence = probabilities[predicted_label] * 100
@@ -97,7 +98,7 @@ def generate_attention_map(model_path, text, output_path="charts/attention_map.p
     plt.close()
 
 
-def fine_tune_model(model_path: str, title: str, text: str, label: str):
+def fine_tune_model(model_path: str, title: str, text: str, label: Label):
     try:
         # Model and tokeniser setup
         tokenizer = DistilBertTokenizer.from_pretrained(model_path)
@@ -105,7 +106,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
 
         # Preparing the data
         input_text = f"[TITLE] {title} [TEXT] {text}"
-        label_id = 0 if label == "REAL" else 1
+        label_id = label.value
 
         def calculate_loss(model, tokenizer, text, label):
             inputs = tokenizer(text, return_tensors="pt", truncation=True, padding="max_length", max_length=128)
