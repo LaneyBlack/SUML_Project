@@ -17,6 +17,15 @@ MODEL_LOG_DIR = "../log/model_log.json"
 
 # Data Preparation
 def organize_data(model_data_path):
+    """
+      Organize and preprocess the data for the model.
+
+      Args:
+          model_data_path (str): Path to the dataset CSV file.
+
+      Returns:
+          pandas.DataFrame: Preprocessed DataFrame with combined text and binary labels.
+    """
     model_data = pd.read_csv(model_data_path)
     model_data['fake'] = model_data['label'].apply(lambda x: 0 if x == "REAL" else 1)
     model_data = model_data.drop("label", axis=1)
@@ -24,8 +33,17 @@ def organize_data(model_data_path):
     return model_data
 
 
-# PyTorch Dataset
 class FakeNewsDataset(Dataset):
+    """
+       Custom PyTorch Dataset for handling fake news data.
+
+       Args:
+           texts (list): List of text samples.
+           labels (list): List of corresponding labels.
+           tokenizer (DistilBertTokenizer): Tokenizer instance for encoding text.
+           max_length (int): Maximum length for text sequences.
+    """
+
     def __init__(self, texts, labels, tokenizer, max_length):
         self.texts = texts
         self.labels = labels
@@ -33,9 +51,24 @@ class FakeNewsDataset(Dataset):
         self.max_length = max_length
 
     def __len__(self):
+        """
+        Get the number of samples in the dataset.
+
+        Returns:
+            int: Number of samples.
+        """
         return len(self.texts)
 
     def __getitem__(self, idx):
+        """
+        Get a single sample by index.
+
+        Args:
+            idx (int): Index of the sample.
+
+        Returns:
+            dict: Dictionary containing input IDs, attention mask, and label.
+        """
         text = self.texts[idx]
         label = self.labels[idx]
         encoding = self.tokenizer(
@@ -53,6 +86,15 @@ class FakeNewsDataset(Dataset):
 
 
 def compute_metrics(eval_pred):
+    """
+    Compute evaluation metrics for the model.
+
+    Args:
+        eval_pred (tuple): Tuple containing logits and labels.
+
+    Returns:
+        dict: Dictionary containing the accuracy score.
+    """
     logits, labels = eval_pred
     # Sprawdź typ logits i labels, aby uniknąć błędów
     if isinstance(logits, torch.Tensor):
@@ -64,6 +106,18 @@ def compute_metrics(eval_pred):
 
 
 def train_model(data):
+    """
+    Train and evaluate a DistilBERT model on the provided data.
+
+    Args:
+        data (pandas.DataFrame): Preprocessed data containing combined text and binary labels.
+
+    Returns:
+        dict: Evaluation results containing metrics like accuracy.
+
+    Raises:
+        Exception: If training fails.
+    """
     try:
         x = data["combined_text"]
         y = data["fake"]
@@ -117,11 +171,27 @@ def train_model(data):
 
 
 class TrainingAccuracyCallback(TrainerCallback):
+    """
+    Custom callback to log training accuracy at the end of each epoch.
+
+    Args:
+        trainer (Trainer): Trainer instance for managing training.
+        train_dataset (Dataset): Dataset used for training.
+    """
+
     def __init__(self, trainer, train_dataset):
         self.trainer = trainer
         self.train_dataset = train_dataset
 
     def on_epoch_end(self, args, state, control, **kwargs):
+        """
+        Compute and log training accuracy at the end of an epoch.
+
+        Args:
+            args: Training arguments.
+            state: Training state.
+            control: Training control.
+        """
         # Use the trainer instance to make predictions
         predictions = self.trainer.predict(self.train_dataset).predictions
         preds = predictions.argmax(axis=1)
@@ -138,6 +208,12 @@ class TrainingAccuracyCallback(TrainerCallback):
 
 
 def construct():
+    """
+        Main function to organize data and train the model.
+
+        Raises:
+            Exception: If the dataset path is invalid or training fails.
+    """
     if not os.path.exists(DATA_DIR):
         raise Exception(f"Data directory does not exist: {DATA_DIR}")
 

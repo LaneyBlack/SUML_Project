@@ -17,6 +17,12 @@ MODEL_LOG_DIR = "log/model_log.json"
 def generate_chart_endpoint():
     """
     Generate a training and validation accuracy chart and return it as a downloadable file.
+
+    Returns:
+        StreamingResponse: A response containing the training accuracy chart in PNG format.
+
+    Raises:
+        HTTPException: If the log history file is not found or an error occurs during chart generation.
     """
     try:
         # Check if log history exists
@@ -51,6 +57,15 @@ def generate_chart_endpoint():
 def attention_map_endpoint(text: str):
     """
     Generate an attention map for the given text and return it as a downloadable file.
+
+    Args:
+        text (str): The input text for which the attention map will be generated.
+
+    Returns:
+        StreamingResponse: A response containing the attention map in PNG format.
+
+    Raises:
+        HTTPException: If the trained model is not found or an error occurs during attention map generation.
     """
     if not os.path.exists(MODEL_PATH):
         raise HTTPException(status_code=404, detail="Trained model not found.")
@@ -69,6 +84,19 @@ def attention_map_endpoint(text: str):
 
 @app.post("/predict")
 async def predict_endpoint(title: str, text: str):
+    """
+    Predict the label of the given text using the trained model.
+
+    Args:
+        title (str): The title of the text.
+        text (str): The main content of the text.
+
+    Returns:
+        dict: A dictionary containing the prediction label and confidence score.
+
+    Raises:
+        HTTPException: If an error occurs during prediction.
+    """
     try:
         prediction = predict_text(title, text)
         return {
@@ -81,12 +109,33 @@ async def predict_endpoint(title: str, text: str):
 
 # Enum for label
 class Label(str, Enum):
+    """
+    Enumeration for the possible labels of the model.
+
+    Attributes:
+        REAL (str): Represents real content.
+        FAKE (str): Represents fake content.
+    """
     REAL = "REAL"
     FAKE = "FAKE"
 
 
 @app.post("/fine-tune")
 def fine_tune_endpoint(title: str, text: str, label: Label):
+    """
+    Fine-tune the model with the given text and label.
+
+    Args:
+        title (str): The title of the text.
+        text (str): The main content of the text.
+        label (Label): The label (REAL or FAKE) associated with the text.
+
+    Returns:
+        dict: A dictionary containing the fine-tuning message and loss values before and after fine-tuning.
+
+    Raises:
+        HTTPException: If the trained model is not found or an error occurs during fine-tuning.
+    """
     if not os.path.exists(MODEL_PATH):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:

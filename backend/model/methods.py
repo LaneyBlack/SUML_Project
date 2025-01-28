@@ -1,16 +1,26 @@
 from backend.import_requirements import plt, sns, DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, \
     TrainingArguments, torch, os
 import shutil
+
 MODEL_PATH = "model/complete_model"
 import io
+
 tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
 model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
 
 
-
 def predict_text(title: str, text: str):
     model.eval()
+    """
+    Predict the label for the given title and text using the trained model.
 
+    Args:
+        title (str): The title of the text.
+        text (str): The main content of the text.
+
+    Returns:
+        dict: A dictionary containing the predicted label and confidence score.
+    """
     # Combine title and text for input
     input_text = f"[TITLE] {title} [TEXT] {text}"
 
@@ -41,7 +51,19 @@ def predict_text(title: str, text: str):
         "confidence": round(confidence, 2)  # Confidence as a percentage
     }
 
-def generate_attention_map( text, output_path="charts/attention_map.png", max_tokens=10):
+
+def generate_attention_map(text, output_path="charts/attention_map.png", max_tokens=10):
+    """
+    Generate an attention map for the given text.
+
+    Args:
+        text (str): The input text for which the attention map will be generated.
+        output_path (str, optional): Path to save the generated attention map image. Defaults to "charts/attention_map.png".
+        max_tokens (int, optional): Maximum number of tokens to display in the attention map. Defaults to 10.
+
+    Returns:
+        io.BytesIO: A buffer containing the generated attention map image.
+    """
     # Tokenize the text
     inputs = tokenizer(
         text,
@@ -98,6 +120,18 @@ def generate_attention_map( text, output_path="charts/attention_map.png", max_to
 
 
 def fine_tune_model(model_path: str, title: str, text: str, label: str):
+    """
+    Fine-tune the model using the given text and label.
+
+    Args:
+        model_path (str): Path to the trained model.
+        title (str): The title of the text.
+        text (str): The main content of the text.
+        label (str): The label associated with the text ("REAL" or "FAKE").
+
+    Returns:
+        dict: A dictionary containing the fine-tuning message and loss values before and after fine-tuning.
+    """
     try:
 
         # Preparing the data
@@ -124,6 +158,14 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
 
         # Creating PyTorch dataset
         class FineTuneDataset(torch.utils.data.Dataset):
+            """
+                       Custom dataset class for fine-tuning.
+
+                       Attributes:
+                           inputs (dict): Tokenized input data.
+                           labels (list): List of labels for the data.
+                       """
+
             def __init__(self, inputs, labels):
                 self.inputs = inputs
                 self.labels = labels
@@ -188,9 +230,21 @@ def fine_tune_model(model_path: str, title: str, text: str, label: str):
             "loss_after": None
         }
 
+
 def plot_training_history(train_accuracies, val_accuracies, output_path="training_accuracy.png"):
     """
-    Generate a training and validation accuracy chart and return it as an in-memory bytes buffer.
+    Generate a training and validation accuracy chart.
+
+    Args:
+        train_accuracies (list): List of training accuracies per epoch.
+        val_accuracies (list): List of validation accuracies per epoch.
+        output_path (str, optional): Path to save the generated chart. Defaults to "training_accuracy.png".
+
+    Returns:
+        io.BytesIO: A buffer containing the generated chart image.
+
+    Raises:
+        RuntimeError: If an error occurs during chart generation.
     """
     try:
         epochs = range(1, len(train_accuracies) + 1)  # Epoch indices
