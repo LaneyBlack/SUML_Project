@@ -1,19 +1,42 @@
+"""
+This module contains utility functions and classes for text classification,
+fine-tuning a model, generating attention maps, and plotting training history.
+"""
 import os
+import io
 import shutil
 import seaborn
-import torch
 import matplotlib.pyplot as plt
-from transformers import DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, TrainingArguments
-
+import torch
+from transformers import (
+    DistilBertTokenizer, DistilBertForSequenceClassification,
+    Trainer, TrainingArguments
+)
 from backend.requests.requests import Label
 
 
-def predict_text(title: str, text: str, model_path: str):
-    # Load the model and tokenizer
-    tokenizer = DistilBertTokenizer.from_pretrained(model_path)
-    model = DistilBertForSequenceClassification.from_pretrained(model_path)
-    model.eval()
+MODEL_PATH = "model/complete_model"
 
+# tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
+# model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
+tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
+tokenizer.save_pretrained("model/complete_model")
+model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
+model.save_pretrained("model/complete_model")
+
+
+def predict_text(title: str, text: str):
+    """
+    Predict the label for the given title and text using the trained model.
+
+    Args:
+        title (str): The title of the text.
+        text (str): The main content of the text.
+
+    Returns:
+        dict: A dictionary containing the predicted label and confidence score.
+    """
+    model.eval()
     # Combine title and text for input
     input_text = f"[TITLE] {title} [TEXT] {text}"
 
@@ -32,7 +55,7 @@ def predict_text(title: str, text: str, model_path: str):
     # Predicted label
     predicted_label = torch.argmax(logits, dim=1).item()
 
-    # Define custom labels (adjust as per your model training)
+    # Match label with its name for displaying
     label = Label(predicted_label).name
 
     # Confidence score for the predicted label
@@ -44,11 +67,21 @@ def predict_text(title: str, text: str, model_path: str):
     }
 
 
-def generate_attention_map(model_path, text, output_path="charts/attention_map.png", max_tokens=10):
-    # Load the tokenizer and model
-    tokenizer = DistilBertTokenizer.from_pretrained(model_path)
-    model = DistilBertForSequenceClassification.from_pretrained(model_path)
+def generate_attention_map(text, output_path="charts/attention_map.png", max_tokens=10):
+    """
+    Generate an attention map for the given text.
 
+    Args:
+        text (str): The input text for which the attention map will be generated.
+        output_path (str, optional):
+            Path to save the generated attention map image.
+            Defaults to "charts/attention_map.png".
+        max_tokens (int, optional):
+            Maximum number of tokens to display in the attention map. Defaults to 10.
+
+    Returns:
+        io.BytesIO: A buffer containing the generated attention map image.
+    """
     # Tokenize the text
     inputs = tokenizer(
         text,
@@ -87,35 +120,90 @@ def generate_attention_map(model_path, text, output_path="charts/attention_map.p
 
     plt.xticks(rotation=45, ha="right", fontsize=10)
     plt.yticks(fontsize=10)
-
-    plt.title("Attention Map (Limited to Top {} Tokens)".format(max_tokens))
+    plt.title(f"Attention Map (Limited to Top {max_tokens} Tokens)")
     plt.xlabel("Input Tokens")
     plt.ylabel("Input Tokens")
-
     plt.tight_layout()
 
+    # Save to a file
     plt.savefig(output_path)
+
+    # Save to an in-memory bytes buffer
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format="png")
+    buffer.seek(0)
     plt.close()
+
+    return buffer
+
+
+def calculate_loss(text, label):
+    """
+    Calculate the loss for a given text and label.
+
+    Args:
+        text (str): The input text for loss calculation.
+        label (int): The label associated with the text (e.g., 0 or 1).
+
+    Returns:
+        float: The calculated loss.
+    """
+    inputs = tokenizer(
+        text, return_tensors="pt",
+        truncation=True, padding="max_length",
+        max_length=128)
+    with torch.no_grad():
+        outputs = model(**inputs, labels=torch.tensor([label]))
+        return outputs.loss.item()
+
+
+class FineTuneDataset(torch.utils.data.Dataset):
+    """
+    Custom dataset class for fine-tuning.
+
+    Attributes:
+        inputs (dict): Tokenized input data.
+        labels (list): List of labels for the data.
+    """
+
+    def __init__(self, inputs, labels):
+        self.inputs = inputs
+        self.labels = labels
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        return {
+            "input_ids": self.inputs["input_ids"][idx],
+            "attention_mask": self.inputs["attention_mask"][idx],
+            "labels": torch.tensor(self.labels[idx], dtype=torch.long)
+        }
 
 
 def fine_tune_model(model_path: str, title: str, text: str, label: Label):
+    """
+    Fine-tune the model using the given text and label.
+
+    Args:
+        model_path (str): Path to the trained model.
+        title (str): The title of the text.
+        text (str): The main content of the text.
+        label (Label): The label associated with the text ("REAL" or "FAKE").
+            value (int): The value of this Enum
+            name (string): String associated with this Enum state
+    Returns:
+        dict:
+            A dictionary containing the fine-tuning message & loss values.
+    """
     try:
-        # Model and tokeniser setup
-        tokenizer = DistilBertTokenizer.from_pretrained(model_path)
-        model = DistilBertForSequenceClassification.from_pretrained(model_path)
 
         # Preparing the data
         input_text = f"[TITLE] {title} [TEXT] {text}"
         label_id = label.value
 
-        def calculate_loss(model, tokenizer, text, label):
-            inputs = tokenizer(text, return_tensors="pt", truncation=True, padding="max_length", max_length=128)
-            with torch.no_grad():
-                outputs = model(**inputs, labels=torch.tensor([label]))
-                return outputs.loss.item()
-
         # Caclulate loss before training
-        loss_before = calculate_loss(model, tokenizer, input_text, label_id)
+        loss_before = calculate_loss(input_text, label_id)
 
         # Tokenizing data for train
         inputs = tokenizer(
@@ -127,20 +215,6 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
         )
 
         # Creating PyTorch dataset
-        class FineTuneDataset(torch.utils.data.Dataset):
-            def __init__(self, inputs, labels):
-                self.inputs = inputs
-                self.labels = labels
-
-            def __len__(self):
-                return len(self.labels)
-
-            def __getitem__(self, idx):
-                return {
-                    "input_ids": self.inputs["input_ids"][idx],
-                    "attention_mask": self.inputs["attention_mask"][idx],
-                    "labels": torch.tensor(self.labels[idx], dtype=torch.long)
-                }
 
         dataset = FineTuneDataset(inputs, [label_id])
 
@@ -161,7 +235,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
 
         trainer.train()
         # Calculate loss after training
-        loss_after = calculate_loss(model, tokenizer, input_text, label_id)
+        loss_after = calculate_loss(input_text, label_id)
 
         # Temp folder to save the model
         temp_model_path = f"{model_path}_temp"
@@ -169,8 +243,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
             shutil.rmtree(temp_model_path)  # Remove the temp folder if it exists
 
         # Saving pretrained temp model
-        model.save_pretrained(temp_model_path)
-        tokenizer.save_pretrained(temp_model_path)
+        save_model(temp_model_path)
 
         # Move to original catalog
         if os.path.exists(model_path):
@@ -183,17 +256,45 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
             "loss_after": loss_after
         }
 
-    except Exception as e:
+    except (OSError, RuntimeError) as e:
         print(f"Error during fine-tuning: {str(e)}")
-        return {
-            "message": "Fine-tuning failed.",
-            "error": str(e),
-            "loss_before": None,
-            "loss_after": None
-        }
+    return {
+        "message": "Fine-tuning failed.",
+        "error": str(e),
+        "loss_before": None,
+        "loss_after": None
+    }
+
+
+def save_model(temp_model_path):
+    """
+    Save the model and tokenizer to the specified temporary path.
+    Args:
+        temp_model_path (str):
+            The temporary directory path where the model and tokenizer will be saved.
+    Returns:
+        None
+    """
+    model.save_pretrained(temp_model_path)
+    tokenizer.save_pretrained(temp_model_path)
 
 
 def plot_training_history(train_accuracies, val_accuracies, output_path="training_accuracy.png"):
+    """
+    Generate a training and validation accuracy chart.
+
+    Args:
+        train_accuracies (list): List of training accuracies per epoch.
+        val_accuracies (list): List of validation accuracies per epoch.
+        output_path (str, optional):
+            Path to save the generated chart. Defaults to "training_accuracy.png".
+
+    Returns:
+        io.BytesIO: A buffer containing the generated chart image.
+
+    Raises:
+        RuntimeError: If an error occurs during chart generation.
+    """
     try:
         epochs = range(1, len(train_accuracies) + 1)  # Epoch indices
         plt.figure(figsize=(10, 5))
@@ -205,10 +306,13 @@ def plot_training_history(train_accuracies, val_accuracies, output_path="trainin
         plt.legend(loc='upper left')
         plt.grid(True)
         plt.tight_layout()
-        # Save the plot
         plt.savefig(output_path)
+        # Save to an in-memory bytes buffer
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format="png")
+        buffer.seek(0)
         plt.close()
 
-        print(f"Training accuracy plot saved to {output_path}")
-    except Exception as e:
-        print(f"Failed to plot training history: {e}")
+        return buffer
+    except RuntimeError as e:
+        raise RuntimeError(f"Failed to plot training history: {e}") from e

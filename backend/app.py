@@ -1,3 +1,8 @@
+"""
+This module provides a FastAPI-based backend for model operations,
+including generating attention maps, predictions, training charts, and fine-tuning.
+"""
+
 import json
 import logging
 import os
@@ -51,6 +56,11 @@ async def log_requests(request: Request, call_next):
 
 @app.get("/logs", response_class=PlainTextResponse)
 def get_logs():
+    """
+        Retrieve the backend logs.
+        Returns:
+            str: The content of the log file.
+    """
     try:
         # Read the log file content
         with open(BACKEND_LOG, "r") as file:
@@ -103,7 +113,7 @@ def generate_chart():
 
         return {"message": "Chart generated successfully.", "chart_path": chart_path}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}") from e
 
 
 @app.post("/attention-map")
@@ -115,37 +125,60 @@ def attention_map_endpoint(text: str):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
         output_path = f"{CHARTS_DIR}/attention_map.png"
-        generate_attention_map(model_path=COMPLETE_MODEL_DIR, text=text, output_path=output_path)
+        generate_attention_map(text=text, output_path=output_path)
         return {"message": "Attention map generated successfully.", "path": output_path}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Error during fine-tuning: {str(e)}") from e
 
 
 @app.post("/predict")
 async def predict_endpoint(request: Prediction):
+    """
+        Predict the label for the given title and text using the trained model.
+
+        Args:
+            title (str): The title of the text.
+            text (str): The main content of the text.
+
+        Returns:
+            dict: A dictionary containing the prediction label and confidence score.
+        """
     try:
         prediction = predict_text(request.title, request.text, MODEL_PATH)
         return {
             "message": "Prediction successful.",
             "prediction": prediction
         }
-    except Exception as e:
+    except (FileNotFoundError, RuntimeError) as e:
         return HTTPException(status_code=500, detail=f"Error during prediction: {str(e)}")
 
 
 @app.post("/fine-tune")
 def fine_tune_endpoint(request: Prediction):
+    """
+    Fine-tune the trained model using the given title, text, and label.
+
+    Args:
+        request (Prediction):
+            title (str): The title of the text.
+            text (str): The main content of the text.
+            label (Label): The label for fine-tuning (REAL or FAKE).
+    Returns:
+        dict: A dictionary containing the fine-tuning results, including the loss before and after.
+    """
     if not os.path.exists(COMPLETE_MODEL_DIR):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
-        results = fine_tune_model(model_path=COMPLETE_MODEL_DIR, title=request.title, text=request.text, label=request.label)
+        results = fine_tune_model(model_path=COMPLETE_MODEL_DIR,  title=request.title, text=request.text, label=request.label)
         return {
             "message": results["message"],
             "loss_before": results.get("loss_before", "N/A"),
             "loss_after": results.get("loss_after", "N/A")
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error during fine-tuning: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error during fine-tuning: {str(e)}"
+        ) from e
 
 
 if __name__ == "__main__":
