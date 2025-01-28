@@ -5,10 +5,15 @@ fine-tuning a model, generating attention maps, and plotting training history.
 import os
 import io
 import shutil
-from backend.import_requirements import (
-    plt, sns, DistilBertTokenizer, DistilBertForSequenceClassification, Trainer,
-    TrainingArguments, torch
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+import torch
+from transformers import (
+    DistilBertTokenizer, DistilBertForSequenceClassification,
+    Trainer, TrainingArguments
 )
+
 
 MODEL_PATH = "model/complete_model"
 

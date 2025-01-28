@@ -1,3 +1,5 @@
+
+
 import json
 import logging
 import os
@@ -5,10 +7,9 @@ import uvicorn
 from enum import Enum
 from fastapi import FastAPI, HTTPException
 from starlette.requests import Request
-from starlette.responses import FileResponse, PlainTextResponse
-# Relative imports
-from model.construction import (organize_data, train_model)
-from model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
+from starlette.responses import PlainTextResponse
+from model.methods import (
+    generate_attention_map, predict_text, fine_tune_model, plot_training_history)
 
 # Define paths
 DATA_DIR = "data/dataset.csv"
@@ -42,7 +43,8 @@ async def log_requests(request: Request, call_next):
     @return: response to the client
     """
     response = await call_next(request)
-    logger.info(f"Incoming request: {response.status_code} {request.method} {request.url} from {request.client.host}")
+    logger.info(f"Incoming request:"
+                f"{response.status_code} {request.method} {request.url} from {request.client.host}")
     # logger.info(f"Response status: {response.status_code}")
     return response
 
@@ -81,7 +83,8 @@ def generate_chart():
     try:
         # Check if log history exists
         if not os.path.exists(MODEL_LOG_DIR):
-            raise HTTPException(status_code=404, detail="Log history file not found. Train the model first.")
+            raise HTTPException(
+                status_code=404, detail="Log history file not found. Train the model first.")
 
         # Load the log history
         with open(MODEL_LOG_DIR, "r") as f:
@@ -142,7 +145,8 @@ def fine_tune_endpoint(title: str, text: str, label: Label):
     if not os.path.exists(COMPLETE_MODEL_DIR):
         raise HTTPException(status_code=404, detail="Trained model not found.")
     try:
-        results = fine_tune_model(model_path=COMPLETE_MODEL_DIR, title=title, text=text, label=label.value)
+        results = fine_tune_model(
+            model_path=COMPLETE_MODEL_DIR, title=title, text=text, label=label.value)
         return {
             "message": results["message"],
             "loss_before": results.get("loss_before", "N/A"),

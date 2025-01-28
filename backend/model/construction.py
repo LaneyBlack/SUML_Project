@@ -3,15 +3,18 @@ This module provides model construction with:
 functionality for organizing data, training a DistilBERT-based model,
 and evaluating its performance for fake news classification.
 """
+import os
 import json
 
-from backend.import_requirements import (
-    pd, train_test_split, DistilBertTokenizer,
-    DistilBertForSequenceClassification, Trainer,
-    TrainingArguments, torch, accuracy_score, Dataset, os)
-
-from transformers import TrainerCallback, DistilBertConfig
-
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from transformers import (
+    DistilBertTokenizer, DistilBertForSequenceClassification,
+    Trainer, TrainingArguments, TrainerCallback, DistilBertConfig
+)
+from torch.utils.data import Dataset
+import torch
 
 # Paths
 DATA_DIR = "../data/dataset.csv"
@@ -118,13 +121,37 @@ config = DistilBertConfig.from_pretrained(
     dropout=0.3,  # This will apply dropout correctly
     attention_dropout=0.3  # Optional: Increases dropout on attention layers
 )
+
+
 def prepare_datasets(data, tokenizer, max_length):
+    """
+    Prepare training and testing datasets from the provided data.
+
+    This function splits the input data into training and testing sets, tokenizes the text data,
+    and creates PyTorch datasets for use in model training and evaluation.
+
+    Args:
+        data (pandas.DataFrame): A DataFrame containing the combined text column ("combined_text")
+            and binary labels column ("fake").
+        tokenizer (transformers.PreTrainedTokenizer):
+            A tokenizer instance (e.g., DistilBertTokenizer)
+            for encoding text data.
+        max_length (int): The maximum length for text sequences after tokenization.
+
+    Returns:
+        tuple: A tuple containing two datasets:
+            - train_dataset (FakeNewsDataset): The training dataset.
+            - test_dataset (FakeNewsDataset): The testing dataset.
+    """
     x = data["combined_text"]
     y = data["fake"]
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
-    train_dataset = FakeNewsDataset(X_train.tolist(), y_train.tolist(), tokenizer, max_length=max_length)
-    test_dataset = FakeNewsDataset(X_test.tolist(), y_test.tolist(), tokenizer, max_length=max_length)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+    train_dataset = (
+        FakeNewsDataset(x_train.tolist(), y_train.tolist(), tokenizer, max_length=max_length))
+    test_dataset = (
+        FakeNewsDataset(x_test.tolist(), y_test.tolist(), tokenizer, max_length=max_length))
     return train_dataset, test_dataset
+
 
 def train_model(data):
     """
@@ -140,21 +167,11 @@ def train_model(data):
         Exception: If training fails.
     """
     try:
-        # x = data["combined_text"]
-        # y = data["fake"]
-        # x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
-
         tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
         model = DistilBertForSequenceClassification.from_pretrained(
             "distilbert-base-uncased",
             config=config  # Pass the modified config
         )
-
-        # Manually set the dropout value
-        # train_dataset = (
-        #     FakeNewsDataset(x_train.tolist(), y_train.tolist(), tokenizer, max_length=128))
-        # test_dataset = (
-        #     FakeNewsDataset(x_test.tolist(), y_test.tolist(), tokenizer, max_length=128))
         train_dataset, test_dataset = prepare_datasets(data, tokenizer, max_length=128)
 
         training_args = TrainingArguments(
@@ -196,6 +213,7 @@ def train_model(data):
     except Exception as e:
         print(f"Training failed: {e}")
         raise
+
 
 class TrainingAccuracyCallback(TrainerCallback):
     """
