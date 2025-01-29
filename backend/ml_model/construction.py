@@ -3,18 +3,18 @@ This module provides ml_model construction with:
 functionality for organizing data, training a DistilBERT-based ml_model,
 and evaluating its performance for fake news classification.
 """
-import os
 import json
 import os
+
 import pandas as pd
 import torch
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset
 from transformers import (
     DistilBertTokenizer, DistilBertForSequenceClassification,
     Trainer, TrainingArguments, TrainerCallback, DistilBertConfig
 )
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
 
 # Paths
 DATA_DIR = "../data/dataset.csv"

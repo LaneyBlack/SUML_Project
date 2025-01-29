@@ -14,7 +14,8 @@ from starlette.requests import Request
 from starlette.responses import PlainTextResponse, StreamingResponse
 # Relative imports
 from ml_model.construction import (construct)
-from ml_model.methods import (generate_attention_map, predict_text, fine_tune_model, plot_training_history)
+from ml_model.methods import (generate_attention_map, predict_text,
+                              fine_tune_model, plot_training_history)
 from models.prediction import Prediction
 
 # Define paths
@@ -50,18 +51,23 @@ app.add_middleware(
 async def log_requests(request: Request, call_next):
     """
     Middleware to log all incoming backend requests and their corresponding responses.
-    This middleware logs the HTTP method, URL, status code and the client IP address for every incoming request,
+    This middleware logs the HTTP method, URL,
+    status code and the client IP address for every incoming request,
     helping to track and monitor API activity for debugging and auditing purposes.
     Parameters:
-        request (Request): The request object containing details such as headers, body, method, and client.
-        call_next (Callable): A callable function that is used to generate the response for the request.
+        request (Request): The request object containing details
+            such as headers, body, method, and client.
+        call_next (Callable): A callable function that is used
+            to generate the response for the request.
     Returns:
         Response: The HTTP response returned to the client after processing the request.
     Logs:
-        Logs an entry with the status code, method, URL, and client IP address for each request.
+        Logs an entry with the status code, method,
+        URL, and client IP address for each request.
     """
     response = await call_next(request)
-    logger.info(f"Incoming request: {response.status_code} {request.method} {request.url} from {request.client.host}")
+    logger.info(f"Incoming request: {response.status_code} "
+                f"{request.method} {request.url} from {request.client.host}")
     return response
 
 
@@ -135,7 +141,8 @@ async def generate_chart():
     try:
         # Check if log history exists
         if not os.path.exists(MODEL_LOG):
-            raise HTTPException(status_code=404, detail="Log history file not found. Train the ml_model first.")
+            raise HTTPException(status_code=404,
+                                detail="Log history file not found. Train the ml_model first.")
 
         # Load the log history
         with open(MODEL_LOG, "r") as f:
@@ -160,10 +167,12 @@ async def generate_chart():
         # Stream the chart back to the client
         return StreamingResponse(buffer,
                                  media_type="image/png",
-                                 headers={"Content-Disposition": "inline; filename=training_accuracy_chart.png"}
+                                 headers={"Content-Disposition": "inline;"
+                                                                 "filename=training_accuracy_chart.png"}
                                  )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating chart: {str(e)}") from e
+        raise HTTPException(status_code=500,
+                            detail=f"Error generating chart: {str(e)}") from e
 
 
 @app.post("/attention-map", tags=['info'])
@@ -223,7 +232,8 @@ async def fine_tune_model(request: Prediction):
         dict: A dictionary containing the fine-tuning results, including the loss before and after.
     """
     if not os.path.exists(MODEL_DIR):
-        raise HTTPException(status_code=404, detail="Trained ml_model not found.")
+        raise HTTPException(status_code=404,
+                            detail="Trained ml_model not found.")
     try:
         results = fine_tune_model(model_path=MODEL_DIR, title=request.title, text=request.text, label=request.label)
         return {
