@@ -13,11 +13,18 @@ from transformers import (
     Trainer, TrainingArguments
 )
 
-
 MODEL_PATH = "ml_model/complete_model"
 
-tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
-model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
+if not os.path.exists(MODEL_PATH):
+    # Create a directory and download the model
+    os.makedirs(MODEL_PATH)
+    tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
+    tokenizer.save_pretrained("ml_model/complete_model")
+    model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
+    model.save_pretrained("ml_model/complete_model")
+else:
+    tokenizer = DistilBertTokenizer.from_pretrained(MODEL_PATH)
+    model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
 
 
 def predict_text(title: str, text: str):
