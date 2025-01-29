@@ -178,7 +178,7 @@ class FineTuneDataset(torch.utils.data.Dataset):
         }
 
 
-def fine_tune_model(model_path: str, title: str, text: str, label: Label):
+def fine_tune_model(model_path: str, title: str, text: str, label: int):
     """
     Fine-tune the ml_model using the given text and label.
     Args:
@@ -196,10 +196,9 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
 
         # Preparing the data
         input_text = f"[TITLE] {title} [TEXT] {text}"
-        label_id = label.value
 
         # Caclulate loss before training
-        loss_before = calculate_loss(input_text, label_id)
+        loss_before = calculate_loss(input_text, label)
 
         # Tokenizing data for train
         inputs = tokenizer(
@@ -212,7 +211,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
 
         # Creating PyTorch dataset
 
-        dataset = FineTuneDataset(inputs, [label_id])
+        dataset = FineTuneDataset(inputs, [label])
 
         training_args = TrainingArguments(
             output_dir="fine_tune_output",
@@ -231,7 +230,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: Label):
 
         trainer.train()
         # Calculate loss after training
-        loss_after = calculate_loss(input_text, label_id)
+        loss_after = calculate_loss(input_text, label)
 
         # Temp folder to save the ml_model
         temp_model_path = f"{model_path}_temp"

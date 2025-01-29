@@ -66,8 +66,10 @@ async def log_requests(request: Request, call_next):
         URL, and client IP address for each request.
     """
     response = await call_next(request)
+    clean_url = str(request.url).split('?')[0] if '?' in str(request.url) else str(request.url)
+
     logger.info(f"Incoming request: {response.status_code} "
-                f"{request.method} {request.url} from {request.client.host}")
+                f"{request.method} {clean_url} from {request.client.host}")
     return response
 
 
@@ -219,15 +221,14 @@ async def get_prediction(request: Prediction):
 
 
 @app.post("/fine-tune", tags=['model'])
-async def fine_tune_model(request: Prediction):
+async def fine_tune(title: str, text: str, label: int):
     """
     Fine-tune the trained ml_model using the given title, text, and label.
 
     Args:
-        request (Prediction):
-            title (str): The title of the text.
-            text (str): The main content of the text.
-            label (Label): The label for fine-tuning (REAL or FAKE).
+        title (str): The title of the text.
+        text (str): The main content of the text.
+        label (Label): The label for fine-tuning (0-REAL or 1-FAKE).
     Returns:
         dict: A dictionary containing the fine-tuning results, including the loss before and after.
     """
@@ -235,7 +236,7 @@ async def fine_tune_model(request: Prediction):
         raise HTTPException(status_code=404,
                             detail="Trained ml_model not found.")
     try:
-        results = fine_tune_model(model_path=MODEL_DIR, title=request.title, text=request.text, label=request.label)
+        results = fine_tune_model(model_path=MODEL_DIR, title=title, text=text, label=label)
         return {
             "message": results["message"],
             "loss_before": results.get("loss_before", "N/A"),
@@ -249,4 +250,5 @@ async def fine_tune_model(request: Prediction):
 
 if __name__ == "__main__":
     # 0.0.0.0 and 10_000 to run in Cloud
-    uvicorn.run(app, host="0.0.0.0", port=10_000)
+    # uvicorn.run(app, host="0.0.0.0", port=10_000)
+    uvicorn.run(app, host="127.0.0.1", port=8_000)
