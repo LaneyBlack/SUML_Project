@@ -68,13 +68,20 @@ async def log_requests(request: Request, call_next):
     response = await call_next(request)
     clean_url = str(request.url).split('?')[0] if '?' in str(request.url) else str(request.url)
 
-    logger.info(f"Incoming request: {response.status_code} "
-                f"{request.method} {clean_url} from {request.client.host}")
+    logger.info("Incoming request: %s %s %s from %s",
+                response.status_code, request.method, clean_url, request.client.host)
+
     return response
 
 
 @app.get("/", tags=["intro"])
 async def index():
+    """
+    Root endpoint of the API.
+
+    Returns:
+        dict: A welcome message.
+    """
     return {"message": "Welcome to the Fake News Detector"}
 
 
@@ -98,9 +105,6 @@ def get_logs(limit: Optional[int] = 1000):
     except FileNotFoundError:
         # Return a custom error message if the file is not found
         return "Log file not found. Please check the file path."
-    except Exception as e:
-        # Return a generic error message in case of any other exception
-        return f"An error occurred: {str(e)}"
 
 
 @app.delete("/logs", tags=['info'], response_class=PlainTextResponse)
@@ -129,8 +133,7 @@ def construct_model():
         results = construct()
         return {"message": "Model trained and saved successfully.", "results": results}
     except Exception as e:
-        print(f"Training failed: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
 
 @app.get("/generate-chart", tags=['info'])
@@ -167,10 +170,10 @@ async def generate_chart():
         buffer = plot_training_history(train_accuracies, val_accuracies, output_path=chart_path)
 
         # Stream the chart back to the client
-        return StreamingResponse(buffer,
-                                 media_type="image/png",
-                                 headers={"Content-Disposition": "inline;"
-                                                                 "filename=training_accuracy_chart.png"}
+        return StreamingResponse(
+            buffer, media_type="image/png",
+            headers={"Content-Disposition": "inline;"
+                                            "filename=training_accuracy_chart.png"}
                                  )
     except Exception as e:
         raise HTTPException(status_code=500,
