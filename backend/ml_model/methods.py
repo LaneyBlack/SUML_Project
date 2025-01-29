@@ -16,6 +16,7 @@ from backend.models.prediction import Label
 
 
 MODEL_PATH = "ml_model/complete_model"
+CHART_PATH = "ml_model/charts"
 
 if not os.path.exists(MODEL_PATH):
     # Create a directory and download the model
@@ -69,7 +70,7 @@ def predict_text(title: str, text: str):
     }
 
 
-def generate_attention_map(text, output_path="charts/attention_map.png", max_tokens=10):
+def generate_attention_map(text, output_path=f"{CHART_PATH}/attention_map.png", max_tokens=10):
     """
     Generate an attention map for the given text.
     Args:
@@ -275,7 +276,7 @@ def fine_tune_model(model_path: str, title: str, text: str, label: int):
 #
 
 
-def plot_training_history(train_accuracies, val_accuracies, output_path="training_accuracy.png"):
+def plot_training_history(train_accuracies, val_accuracies, output_path=f"{CHART_PATH}/training_accuracy.png"):
     """
     Generate a training and validation accuracy chart.
     Args:

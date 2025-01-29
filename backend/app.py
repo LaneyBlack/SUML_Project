@@ -21,7 +21,7 @@ from models.prediction import Prediction
 # Define paths
 DATA_DIR = "data/dataset.csv"
 MODEL_DIR = "ml_model/complete_model"
-CHARTS_DIR = "log/charts"  # Directory where charts will be saved
+CHARTS_DIR = "ml_model/charts"  # Directory where charts will be saved
 MODEL_LOG = "log/model_log.json"
 BACKEND_LOG = "log/backend.log"
 
